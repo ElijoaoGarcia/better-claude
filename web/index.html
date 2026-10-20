@@ -3,11 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>better-claude</title>
-  <meta name="description" content="Small plugins and mods that make your life (and Claude Code) better: Image Preview, Sub Meter, Commit and Narrator.">
+  <title>Free Claude Code Plugins &amp; Mods | better-claude</title>
+  <meta name="description" content="Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.">
+  <link rel="canonical" href="https://betterclaude.dev/">
+  <meta name="robots" content="max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="better-claude">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://betterclaude.dev/">
+  <meta property="og:title" content="Free Claude Code Plugins &amp; Mods | better-claude">
+  <meta property="og:description" content="Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.">
+  <meta property="og:image" content="https://betterclaude.dev/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="better-claude: free, open-source plugins and mods for Claude Code. Image previews, usage tracking, Git commits and spoken summaries.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@midudev">
+  <meta name="twitter:title" content="Free Claude Code Plugins &amp; Mods | better-claude">
+  <meta name="twitter:description" content="Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.">
+  <meta name="twitter:image" content="https://betterclaude.dev/og-image.png">
+  <meta name="twitter:image:alt" content="better-claude: free, open-source plugins and mods for Claude Code. Image previews, usage tracking, Git commits and spoken summaries.">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://betterclaude.dev/#website",
+      "url": "https://betterclaude.dev/",
+      "name": "better-claude",
+      "alternateName": "Better Claude",
+      "description": "Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name": "Miguel Ángel Durán",
+        "alternateName": "midudev",
+        "url": "https://github.com/midudev"
+      }
+    }
+  </script>
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#000000">
-  <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 -4 18 18" shape-rendering="crispEdges"%3E%3Cpath fill="rgb(215,119,87)" d="M3 0h1v2h-1zM3 2h1v2h-1zM4 0h1v2h-1zM5 0h1v2h-1zM4 2h1v2h-1zM6 0h1v2h-1zM7 0h1v2h-1zM6 2h1v2h-1zM7 2h1v2h-1zM8 0h1v2h-1zM9 0h1v2h-1zM8 2h1v2h-1zM9 2h1v2h-1zM10 0h1v2h-1zM11 0h1v2h-1zM10 2h1v2h-1zM11 2h1v2h-1zM12 0h1v2h-1zM13 0h1v2h-1zM12 2h1v2h-1zM14 0h1v2h-1zM15 0h1v2h-1zM14 2h1v2h-1zM15 2h1v2h-1zM1 4h1v2h-1zM2 4h1v2h-1zM3 4h1v2h-1zM3 6h1v2h-1zM4 4h1v2h-1zM5 4h1v2h-1zM4 6h1v2h-1zM5 6h1v2h-1zM6 4h1v2h-1zM7 4h1v2h-1zM6 6h1v2h-1zM7 6h1v2h-1zM8 4h1v2h-1zM9 4h1v2h-1zM8 6h1v2h-1zM9 6h1v2h-1zM10 4h1v2h-1zM11 4h1v2h-1zM10 6h1v2h-1zM11 6h1v2h-1zM12 4h1v2h-1zM13 4h1v2h-1zM12 6h1v2h-1zM13 6h1v2h-1zM14 4h1v2h-1zM15 4h1v2h-1zM14 6h1v2h-1zM15 6h1v2h-1zM16 4h1v2h-1zM17 4h1v2h-1zM3 8h1v2h-1zM5 8h1v2h-1zM13 8h1v2h-1zM15 8h1v2h-1z"/%3E%3C/svg%3E'>
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon.png">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg">
   <link rel="preload" href="fonts/geist-mono-727f8a0a.woff2" as="font" type="font/woff2" crossorigin>
   <style>
     /* Both fonts are cut down to what the page shows by fonts/subset.py: rerun it after changing the text. */
@@ -411,7 +449,7 @@
         <div class="clawd" id="clawd" aria-hidden="true"></div>
         <h1>better-claude</h1>
       </div>
-      <p class="lede">Small plugins and mods that make your life (and Claude Code) better, by <a href="https://github.com/midudev">@midudev</a>.</p>
+      <p class="lede">Free, open-source plugins and mods for Claude Code, by <a href="https://github.com/midudev">@midudev</a>.</p>
 
       <section class="install" aria-label="Install">
         <ul class="picks">
@@ -671,7 +709,7 @@
           'claude plugin marketplace add midudev/better-claude',
           ...names.map(name => `claude plugin install ${name}@better-claude`),
           '',
-          `Then tell me to restart Claude Code so ${one ? 'it loads' : 'they load'}.`
+          `Then tell me to restart Claude Code so ${one ? 'it loads' : 'they load'}, and to get new versions on their own by turning on auto-update: /plugin → Marketplaces → better-claude → Enable auto-update.`
         ].join('\n')
       }
 

@@ -19,10 +19,11 @@ const windowsOf = (rateLimits: readonly SessionRateLimit[]): Limit[] =>
     return found ? [{ kind, percentUsed: found.percentUsed, resetsAt: found.resetsAt }] : []
   })
 
-/** Whether a drawing beneath shows nothing: no text, no control (the engine's own node is empty). */
+/** Whether a drawing beneath shows nothing: no text, no control (the engine's own node draws `modes`, counted apart). */
 function isBlank (node: RenderNode | undefined): boolean {
   if (node === undefined || node === null) return true
   if (typeof node === 'string') return node.trim() === ''
+  if (node.type === 'engine') return true
   return (node.type === 'Box' || node.type === 'Text') && (node.children ?? []).every(isBlank)
 }
 
@@ -65,7 +66,8 @@ export const register: Register = (on, options) => {
     return next(e)
   })
 
-  // Bottom right of the prompt footer: the engine's mode labels, then the meter.
+  // Bottom right of the prompt footer: the meter, then what is beneath it (the engine's mode labels,
+  // another plugin's switch), so a plugin that draws itself last stays last whichever wraps the other.
   on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
     const all = await read($, limits)
     if (all.length === 0) return next(e)
@@ -76,20 +78,19 @@ export const register: Register = (on, options) => {
     const hasReset = resetsIn !== undefined && resetsIn <= 0
     const percent = hasReset ? 0 : shown.percentUsed
     const filled = Math.round((Math.min(Math.max(percent, 0), 100) / 100) * CELLS)
-    // The engine's own labels, and what any other plugin draws there (a switch), stay as drawn, before the meter.
     const beneath = await next(e)
-    const labels = e.props.modes.length > 0 || !isBlank(beneath) ? beneath : null
+    const hasBeneath = e.props.modes.length > 0 || !isBlank(beneath)
     const { Box, Text } = $.ui.resolve(e)
 
     return (
       <Box flexDirection="row">
-        {labels}
-        {labels ? <Text dimColor> · </Text> : null}
         <Text dimColor>{LABELS[shown.kind] ?? shown.kind} </Text>
         <Text color={colorFor(percent)}>{'━'.repeat(filled)}</Text>
         <Text dimColor>{'─'.repeat(CELLS - filled)}</Text>
         <Text> {Math.round(percent)}%</Text>
-        {resetsIn !== undefined && !hasReset ? <Text dimColor> · {until(resetsIn)}</Text> : null}
+        {resetsIn !== undefined && !hasReset ? <Text dimColor> ↻ {until(resetsIn)}</Text> : null}
+        {hasBeneath ? <Text dimColor> · </Text> : null}
+        {beneath}
       </Box>
     )
   })

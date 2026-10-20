@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>better-claude social image source</title>
+  <!--
+    Serve the repository root with: python3 -m http.server 4173 --bind 127.0.0.1
+    Open /scripts/social-card.html in an isolated browser at 1200 × 630, scale 1.
+    Wait for document.fonts.ready, then capture to web/og-image.png.
+    The source lives outside web/ so it is not published as a duplicate landing page.
+  -->
+  <style>
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("../web/fonts/src/geist-mono-latin.woff2") format("woff2");
+      font-weight: 400 600;
+    }
+    @font-face {
+      font-family: "Geist Pixel";
+      src: url("../web/fonts/src/geist-pixel-latin.woff2") format("woff2");
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 1200px; height: 630px; margin: 0; overflow: hidden; }
+    body {
+      position: relative;
+      padding: 64px 72px;
+      background: radial-gradient(900px 600px at 8% -15%, #2d1812, transparent 75%), #000;
+      color: #ececec;
+      font: 400 24px/1.6 "Geist Mono", monospace;
+      -webkit-font-smoothing: antialiased;
+    }
+    .eyebrow { margin: 0 0 28px; color: #d77757; font-size: 18px; letter-spacing: .08em; }
+    h1 { margin: 0; font: 400 108px/1.1 "Geist Pixel", monospace; letter-spacing: -.015em; }
+    .tagline { margin: 28px 0 18px; font-size: 36px; letter-spacing: -.04em; }
+    .features { margin: 0; color: #9b9b9b; font-size: 22px; line-height: 1.8; }
+    .mascot { position: absolute; top: 52px; right: 64px; width: 108px; height: 108px; }
+    footer {
+      position: absolute; bottom: 52px; left: 72px; right: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #26201d; padding-top: 28px; font-size: 18px;
+    }
+    .install { padding: 10px 22px; border-radius: 99px; background: #d77757; color: #000; font-weight: 500; }
+    .domain { color: #9b9b9b; }
+    .domain span { color: #ececec; }
+  </style>
+</head>
+<body>
+  <p class="eyebrow">FREE &amp; OPEN SOURCE · BY @MIDUDEV</p>
+  <img class="mascot" src="../web/favicon.svg" alt="" width="108" height="108">
+  <h1>better-claude</h1>
+  <p class="tagline">Plugins &amp; mods for Claude Code.</p>
+  <p class="features">Image previews · Usage tracking<br>Git commits · Spoken summaries</p>
+  <footer>
+    <span class="install">Install in one prompt</span>
+    <span class="domain"><span>betterclaude</span>.dev</span>
+  </footer>
+</body>
+</html>

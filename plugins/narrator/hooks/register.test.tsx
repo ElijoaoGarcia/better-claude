@@ -48,10 +48,10 @@ function world (on: On, { system = 'Darwin', env = {}, reply = 'es\nHe añadido 
   on('prompt.submit', ($, e) => ({ text: e.text }))
   on('command.register', ($, e) => ({ value: { command: e.name } }))
   on('command.run', () => ({ text: 'no plugin answered' }))
-  // What the engine draws where the mod draws nothing
+  // What the engine draws where the mod draws nothing: its own node, as core answers it; with mode labels, a Box the tests find.
   on('ui.render', ($, e) => {
     const { Box } = $.ui.resolve(e)
-    return <Box key="engine" />
+    return e.props.modes.length > 0 ? <Box key="engine" /> : ({ type: 'engine', ref: 0 } as const)
   })
   on('ui.toast', ($, e) => {
     toasts.push(e.text)
@@ -184,7 +184,7 @@ test('after a turn, Haiku writes what Claude did and macOS says it in the langua
   expect(w.prompts[0]).toContain('Added the **narrator**')
   expect(w.spoken).toHaveLength(1)
   expect(behindLine(w.spoken[0]!).slice(0, 3)).toEqual(['osascript', '-l', 'JavaScript'])
-  expect(w.spoken[0]!.env).toEqual({ NARRATOR_TEXT: 'He añadido el narrador y los tests pasan.', NARRATOR_LANG: 'es', NARRATOR_VOICE: '', NARRATOR_TICKET: '0000000000000' })
+  expect(w.spoken[0]!.env).toEqual({ NARRATOR_TEXT: 'He añadido el narrador y los tests pasan.', NARRATOR_LANG: 'es', NARRATOR_VOICE: '', NARRATOR_SPEED: '1.2', NARRATOR_TICKET: '0000000000000' })
 })
 
 test('the voice setting reaches the speaker', { options: { voice: 'Mónica' } }, async ($, on) => {
@@ -194,6 +194,15 @@ test('the voice setting reaches the speaker', { options: { voice: 'Mónica' } },
   await turn($)
   await speech
   expect(w.spoken[0]!.env.NARRATOR_VOICE).toBe('Mónica')
+})
+
+test('the speed setting reaches the speaker', { options: { speed: 1.5 } }, async ($, on) => {
+  const w = world(on, { store: { enabled: true } })
+  await startSession($)
+  const speech = w.nextSpeech()
+  await turn($)
+  await speech
+  expect(w.spoken[0]!.env.NARRATOR_SPEED).toBe('1.5')
 })
 
 test("a subagent's turn and an interrupted turn are not narrated", async ($, on) => {
@@ -260,7 +269,7 @@ test("WSL speaks with Windows' voices, its variables crossing over", async ($, o
   await turn($)
   await speech
   expect(behindLine(w.spoken[0]!)[0]).toBe('powershell.exe')
-  expect(w.spoken[0]!.env.WSLENV).toBe('NARRATOR_TEXT/u:NARRATOR_LANG/u:NARRATOR_VOICE/u')
+  expect(w.spoken[0]!.env.WSLENV).toBe('NARRATOR_TEXT/u:NARRATOR_LANG/u:NARRATOR_VOICE/u:NARRATOR_SPEED/u')
 })
 
 test('Linux speaks with speech-dispatcher in the language Haiku names', async ($, on) => {
@@ -270,8 +279,17 @@ test('Linux speaks with speech-dispatcher in the language Haiku names', async ($
   await turn($)
   await speech
   expect(w.spoken[0]!.argv.slice(0, 2)).toEqual(['sh', '-c'])
-  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '--', 'He añadido el narrador y los tests pasan.'])
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '-r', '12', '--', 'He añadido el narrador y los tests pasan.'])
   expect(w.spoken[0]!.env.NARRATOR_STOP).toBe('spd-say -S')
+})
+
+test('at speed 1 speech-dispatcher keeps the rate it is set up with', { options: { speed: 1 } }, async ($, on) => {
+  const w = world(on, { store: { enabled: true }, system: 'Linux', tools: '/usr/bin/spd-say\n' })
+  await startSession($)
+  const speech = w.nextSpeech()
+  await turn($)
+  await speech
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '--', 'He añadido el narrador y los tests pasan.'])
 })
 
 test('a language the synthesizer has no voice for is read in English', async ($, on) => {
@@ -280,7 +298,7 @@ test('a language the synthesizer has no voice for is read in English', async ($,
   const speech = w.nextSpeech()
   await turn($)
   await speech
-  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'espeak-ng', '-v', 'en', '--', 'He añadido el narrador y los tests pasan.'])
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'espeak-ng', '-v', 'en', '-s', '210', '--', 'He añadido el narrador y los tests pasan.'])
 })
 
 test('where no speaker works, the engine speaks; where it cannot either, a toast says what to install', async ($, on) => {

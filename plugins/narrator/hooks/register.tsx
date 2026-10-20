@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderNode } from 'claude-code'
 
-import { LINUX, MACOS, QUEUE, WINDOWS, powershell } from './speaker'
+import { LINUX, MACOS, QUEUE, WINDOWS, dispatcherRate, espeakWords, powershell } from './speaker'
 import { cut, guessLanguage, parseNarration, plain } from './text'
 
 type Platform = 'macos' | 'windows' | 'linux' | 'other'
@@ -16,6 +16,8 @@ type LinuxSpeech = { tool?: 'spd-say' | 'espeak-ng' | 'espeak'; languages: Set<s
 // each in a quiet color. U+FE0E keeps the pause sign a text glyph, never an emoji.
 const SWITCH_ON = { label: '\u23F5 narrator on', color: 'success' } as const
 const SWITCH_OFF = { label: '\u23F8\uFE0E narrator off', color: 'inactive' } as const
+// A little quicker than the voice's normal pace, unless the settings say otherwise.
+const SPEED = 1.2
 const MAX_ACTIONS = 40
 // The tool inputs that say best what a call did, in order of preference.
 const DETAILS = ['description', 'file_path', 'notebook_path', 'path', 'pattern', 'url', 'query', 'skill', 'command', 'prompt']
@@ -38,7 +40,7 @@ const enabled = atom({ plugin: 'narrator', key: 'isEnabled' } as const, false)
 /** An answer this short is read out as it is: no model call to write a narration of it. */
 const SHORT_ANSWER = 200
 
-let settings = { voice: '', model: 'haiku', shortAnswer: SHORT_ANSWER }
+let settings = { voice: '', model: 'haiku', speed: SPEED, shortAnswer: SHORT_ANSWER }
 // The main loop's turn so far: the prompt that started it and each tool call it made.
 let request = ''
 let actions: string[] = []
@@ -108,7 +110,7 @@ function linuxSpeechOf ($: EngineInterface) {
 
 /** The programs that can say `text` here, best first. */
 async function speakersFor ($: EngineInterface, text: string, language: string): Promise<Command[]> {
-  const env = { NARRATOR_TEXT: text, NARRATOR_LANG: language, NARRATOR_VOICE: settings.voice }
+  const env = { NARRATOR_TEXT: text, NARRATOR_LANG: language, NARRATOR_VOICE: settings.voice, NARRATOR_SPEED: String(settings.speed) }
   const system = await platformOf($)
   if (system === 'macos') return [{ argv: ['osascript', '-l', 'JavaScript', '-e', MACOS], env, program: 'osascript' }]
   if (system === 'windows') return [{ argv: powershell(WINDOWS), env, program: 'powershell' }]
@@ -117,18 +119,21 @@ async function speakersFor ($: EngineInterface, text: string, language: string):
   const speakers: Command[] = []
   if (await wslOf($)) {
     const inherited = await $.env.get('WSLENV')
-    const crossing = [inherited, 'NARRATOR_TEXT/u', 'NARRATOR_LANG/u', 'NARRATOR_VOICE/u'].filter(Boolean).join(':')
+    const crossing = [inherited, 'NARRATOR_TEXT/u', 'NARRATOR_LANG/u', 'NARRATOR_VOICE/u', 'NARRATOR_SPEED/u'].filter(Boolean).join(':')
     speakers.push({ argv: powershell(WINDOWS, 'powershell.exe'), env: { ...env, WSLENV: crossing }, program: 'powershell.exe' })
   }
   const { tool, languages } = await linuxSpeechOf($)
   // A language the synthesizer has no voice for is read by its English voice.
   const lang = language && (languages.size === 0 || languages.has(language) ? language : 'en')
+  // At speed 1 no rate is given: the synthesizer keeps the one it is set up with.
+  const isPaced = settings.speed !== 1
   if (tool === 'spd-say') {
-    const options = [...(lang ? ['-l', lang] : []), ...(settings.voice ? ['-y', settings.voice] : [])]
+    const options = [...(lang ? ['-l', lang] : []), ...(settings.voice ? ['-y', settings.voice] : []), ...(isPaced ? ['-r', String(dispatcherRate(settings.speed))] : [])]
     speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', 'spd-say', '-w', ...options, '--', text], env: { ...env, NARRATOR_STOP: 'spd-say -S' }, program: 'spd-say' })
   } else if (tool) {
     const voice = settings.voice || lang
-    speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', tool, ...(voice ? ['-v', voice] : []), '--', text], env, program: tool })
+    const options = [...(voice ? ['-v', voice] : []), ...(isPaced ? ['-s', String(espeakWords(settings.speed))] : [])]
+    speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', tool, ...options, '--', text], env, program: tool })
   }
   return speakers
 }
@@ -231,17 +236,20 @@ async function setEnabled ($: EngineInterface, value?: boolean) {
   return isEnabled
 }
 
-/** Whether a drawing beneath shows nothing: no text, no control (the engine's own node is empty). */
+/** Whether a drawing beneath shows nothing: no text, no control (the engine's own node draws `modes`, counted apart). */
 function isBlank (node: RenderNode | undefined): boolean {
   if (node === undefined || node === null) return true
   if (typeof node === 'string') return node.trim() === ''
+  if (node.type === 'engine') return true
   return (node.type === 'Box' || node.type === 'Text') && (node.children ?? []).every(isBlank)
 }
 
 export const register: Register = (on, options) => {
+  const speed = Number(options.speed)
   settings = {
     voice: String(options.voice ?? '').trim(),
     model: String(options.model || 'haiku'),
+    speed: speed > 0 ? speed : SPEED,
     shortAnswer: Number.isFinite(Number(options.shortAnswer)) && options.shortAnswer !== '' && options.shortAnswer != null ? Math.max(0, Number(options.shortAnswer)) : SHORT_ANSWER
   }
 

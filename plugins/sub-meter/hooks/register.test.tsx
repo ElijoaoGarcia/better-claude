@@ -23,9 +23,11 @@ function world (on: On, rateLimits: SessionRateLimit[] = LIMITS) {
   on('session.start', ($, e) => ({ cwd: e.cwd }))
   on('session.usage', () => ({ value: { startedAt: NOW, context: { window: 200_000 }, rateLimits } as never }))
   on('session.measure', ($, e) => ({ changed: e.changed }))
+  // The engine's own node, as core answers it; with mode labels, a Box the tests find.
   on('ui.render', ($, e) => {
     const { Box, Text } = $.ui.resolve(e)
-    return 'hint' in e.props ? <Text>{e.props.hint}</Text> : <Box key="engine" />
+    if ('hint' in e.props) return <Text>{e.props.hint}</Text>
+    return e.props.modes.length > 0 ? <Box key="engine" /> : ({ type: 'engine', ref: 0 } as const)
   })
   return { clock, store }
 }
@@ -44,7 +46,7 @@ test('shows the 5-hour window first, as a bar with the time until it resets', as
   expect(await ui.find({ type: 'Text', text: '━━━━━━' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: '────' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: ' 58%' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: ' · 2h 10m' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: ' ↻ 2h 10m' })).toBeDefined()
 })
 
 test('takes turns with the weekly window', async ($, on) => {
@@ -54,7 +56,7 @@ test('takes turns with the weekly window', async ($, on) => {
   const ui = await footer($)
   expect(await ui.find({ type: 'Text', text: 'week ' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: ' 24%' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: ' · 3d 4h' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: ' ↻ 3d 4h' })).toBeDefined()
 })
 
 test('takes turns as often as rotateSeconds says', { options: { rotateSeconds: 30 } }, async ($, on) => {
@@ -66,16 +68,23 @@ test('takes turns as often as rotateSeconds says', { options: { rotateSeconds: 3
   expect(await (await footer($)).find({ type: 'Text', text: 'week ' })).toBeDefined()
 })
 
-test("keeps the engine's mode labels before the meter", async ($, on) => {
+test('alone, with no mode labels, the meter ends the footer', async ($, on) => {
+  world(on)
+  await startSession($)
+  const ui = await footer($)
+  expect((await ui.findAll({ type: 'Text' })).at(-1)?.text).toBe(' ↻ 2h 10m')
+})
+
+test("keeps the engine's mode labels after the meter", async ($, on) => {
   world(on)
   await startSession($)
   const ui = await footer($, ['focus'])
-  expect(await ui.find({ key: 'engine' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: ' · ' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: '5h ' })).toBeDefined()
+  const row = await ui.drawn()
+  expect(row.children?.at(-1)).toMatchObject({ props: { key: 'engine' } })
+  expect((await ui.findAll({ type: 'Text' })).map(text => text.text)).toEqual(['5h ', '━━━━━━', '────', ' 58%', ' ↻ 2h 10m', ' · '])
 })
 
-test("keeps another plugin's drawing there before the meter, with no mode labels", async ($, on) => {
+test("keeps another plugin's drawing there after the meter, so it stays last", async ($, on) => {
   // Beneath the meter: another plugin's switch, where the engine has no labels to draw.
   on('ui.render', { component: 'SessionMode' }, ($, e) => {
     const { Text } = $.ui.resolve(e)
@@ -84,16 +93,15 @@ test("keeps another plugin's drawing there before the meter, with no mode labels
   world(on)
   await startSession($)
   const ui = await footer($)
-  expect(await ui.find({ type: 'Text', text: '⏵ narrator on' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: ' · ' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: '5h ' })).toBeDefined()
+  expect((await ui.findAll({ type: 'Text' })).map(text => text.text).slice(-3)).toEqual([' ↻ 2h 10m', ' · ', '⏵ narrator on'])
 })
 
 test('off a subscription the engine draws its own footer', async ($, on) => {
   world(on, [])
   await startSession($)
-  const ui = await footer($)
+  const ui = await footer($, ['focus'])
   expect(await ui.find({ key: 'engine' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: '5h ' })).toBeUndefined()
 })
 
 test('a new measurement shows at once and is kept for the next session', async ($, on) => {

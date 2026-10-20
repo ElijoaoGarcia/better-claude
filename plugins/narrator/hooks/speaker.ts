@@ -1,9 +1,9 @@
 // The programs that speak a narration: one a system, each the best free voice that system has. Each
 // reads NARRATOR_TEXT, what to say; NARRATOR_LANG, its language as an ISO 639-1 code (empty: the
 // program tells, or uses its default); and NARRATOR_VOICE, a voice's name (empty: the best one for
-// the language, English's when the language has none). Each writes `voice <name>` once it speaks,
-// or a line starting `error`, then a `.` every tenth of a second while it speaks, so the one reading
-// it is woken to end it.
+// the language, English's when the language has none); and NARRATOR_SPEED, how fast (1: the voice's
+// normal pace). Each writes `voice <name>` once it speaks, or a line starting `error`, then a `.`
+// every tenth of a second while it speaks, so the one reading it is woken to end it.
 
 /**
  * macOS: JavaScript for Automation, run by `osascript`, with AVSpeechSynthesizer, which reaches the
@@ -19,6 +19,7 @@ function run () {
   const say = text => $.NSFileHandle.fileHandleWithStandardOutput.writeData($(text + '\n').dataUsingEncoding($.NSUTF8StringEncoding))
   const text = read('NARRATOR_TEXT')
   const wanted = read('NARRATOR_VOICE').toLowerCase()
+  const speed = Number(read('NARRATOR_SPEED')) || 1
   if (!text) return
 
   const found = $.NLLanguageRecognizer.dominantLanguageForString(text)
@@ -60,6 +61,9 @@ function run () {
   const synth = $.AVSpeechSynthesizer.alloc.init
   const utterance = $.AVSpeechUtterance.speechUtteranceWithString(text)
   if (picked) utterance.voice = picked.voice
+  // The voice's normal pace is a rate of 0.5; measured, each 0.1 above it speaks 0.6 times faster and
+  // each 0.1 below 0.088 slower, the same for Siri's voices and the compact ones.
+  utterance.rate = Math.min(Math.max(speed >= 1 ? 0.5 + (speed - 1) / 6 : 0.5 - (1 - speed) / 0.88, 0), 1)
   say('voice ' + (picked ? picked.id : 'default'))
   synth.speakUtterance(utterance)
 
@@ -85,6 +89,10 @@ $ErrorActionPreference = 'Stop'
 $text = $env:NARRATOR_TEXT
 $language = "$env:NARRATOR_LANG".ToLower().Split('-')[0]
 $wanted = "$env:NARRATOR_VOICE"
+# Read with a dot whatever the region's decimal mark.
+$speed = 0.0
+$null = [double]::TryParse("$env:NARRATOR_SPEED", [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$speed)
+if ($speed -le 0) { $speed = 1.0 }
 if (-not $text) { exit 0 }
 $region = (Get-Culture).Name
 function Say($line) { [Console]::Out.WriteLine($line); [Console]::Out.Flush() }
@@ -118,6 +126,8 @@ function Speak-OneCore {
   $voices = @([Windows.Media.SpeechSynthesis.SpeechSynthesizer]::AllVoices | ForEach-Object { [pscustomobject]@{ Name = $_.DisplayName; Language = $_.Language; Item = $_ } })
   $picked = Pick $voices
   if ($picked) { $synth.Voice = $picked.Item }
+  # A multiple of the voice's pace, from 0.5 to 6 (Windows 10 1803 on).
+  if ($synth.Options) { $synth.Options.SpeakingRate = [Math]::Min([Math]::Max($speed, 0.5), 6) }
   $asTask = [System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -like 'IAsyncOperation*' } | Select-Object -First 1
   $task = $asTask.MakeGenericMethod([Windows.Media.SpeechSynthesis.SpeechSynthesisStream]).Invoke($null, @($synth.SynthesizeTextToStreamAsync($text)))
   $null = $task.Wait(-1)
@@ -143,6 +153,8 @@ function Speak-Sapi {
   $voices = @($synth.GetInstalledVoices() | Where-Object { $_.Enabled } | ForEach-Object { [pscustomobject]@{ Name = $_.VoiceInfo.Name; Language = $_.VoiceInfo.Culture.Name; Item = $_ } })
   $picked = Pick $voices
   if ($picked) { $synth.SelectVoice($picked.Name) }
+  # From -10 to 10, each end about three times slower or faster than the voice's pace.
+  $synth.Rate = [int][Math]::Max(-10, [Math]::Min(10, [Math]::Round(10 * [Math]::Log($speed) / [Math]::Log(3))))
   $script:isSpeaking = $true
   Say "voice $($synth.Voice.Name)"
   $spoken = $synth.SpeakAsync($text)
@@ -178,6 +190,17 @@ while kill -0 "$pid" 2>/dev/null; do
 done
 wait "$pid" || echo "error: $1 failed"
 `
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
+
+/**
+ * speech-dispatcher's rate for a speed, from -100 to 100, as its espeak-ng module reads it: 0 is 170
+ * words a minute, -100 is 80 and 100 is 449.
+ */
+export const dispatcherRate = (speed: number) => Math.round(clamp(((speed - 1) * 170 * 100) / (speed >= 1 ? 279 : 90), -100, 100))
+
+/** espeak's words a minute for a speed: 175 at its normal pace, within the 80 to 450 it takes. */
+export const espeakWords = (speed: number) => Math.round(clamp(175 * speed, 80, 450))
 
 /** A PowerShell script as `-EncodedCommand` takes it: UTF-16LE, base64. */
 export function encodedCommand (script: string) {

@@ -44,6 +44,7 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 In `/config`:
 
 - **Voice**: a voice's name (`Mónica`, `Microsoft Helena`) to always speak with. Empty: the best one for the language.
+- **Speed**: how fast it speaks, as a multiple of the voice's normal pace, from `0.5` to `2`: `1.2` by default, a little quicker; `1` is the voice's own. The engine's voice, the last resort, keeps its own pace.
 - **Read short answers as they are**: an answer up to this many characters (200 by default) is read out as it is, with no Haiku call to retell it. `0`: always narrate.
 - **Model that writes the narration**: `haiku` by default.
 
