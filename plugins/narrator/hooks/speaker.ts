@@ -1,9 +1,11 @@
 // The programs that speak a narration: one a system, each the best free voice that system has. Each
 // reads NARRATOR_TEXT, what to say; NARRATOR_LANG, its language as an ISO 639-1 code (empty: the
 // program tells, or uses its default); and NARRATOR_VOICE, a voice's name (empty: the best one for
-// the language, English's when the language has none); and NARRATOR_SPEED, how fast (1: the voice's
-// normal pace). Each writes `voice <name>` once it speaks, or a line starting `error`, then a `.`
-// every tenth of a second while it speaks, so the one reading it is woken to end it.
+// the language, English's when the language has none); NARRATOR_SPEED, how fast (1: the voice's
+// normal pace); and NARRATOR_TICKET, when it was ready, its place in the line every window's
+// narrations wait in (see QUEUE). Each writes `voice <name>` once it speaks, or a line starting
+// `error`, then a `.` every tenth of a second while it speaks, so the one reading it is woken to end
+// it; while it waits in the line, a `.` every 0.3 s, and `skipped` if the line drops it.
 
 /**
  * macOS: JavaScript for Automation, run by `osascript`, with AVSpeechSynthesizer, which reaches the
@@ -82,7 +84,8 @@ function run () {
 /**
  * Windows (and WSL, through `powershell.exe`): the OneCore voices of Windows.Media.SpeechSynthesis,
  * the ones Narrator uses, played from memory; where WinRT cannot load, the desktop SAPI voices of
- * System.Speech. It also writes `pid <n>`, so WSL, whose end of the pipe cannot end it, can.
+ * System.Speech. It also writes `pid <n>`, so WSL, whose end of the pipe cannot end it, can. It
+ * waits in a line of its own, Windows', which the windows of WSL share.
  */
 export const WINDOWS = String.raw`
 $ErrorActionPreference = 'Stop'
@@ -161,11 +164,59 @@ function Speak-Sapi {
   while (-not $spoken.IsCompleted) { Start-Sleep -Milliseconds 100; Say '.' }
 }
 
+# The line every window waits in, as QUEUE's on macOS and Linux: a ticket (NARRATOR_TICKET, then
+# this process's id) in a folder of the user's own, the oldest live one first, and a mutex for the
+# one that speaks, which Windows lets go of when its process ends. False: dropped, not to be said.
+$script:ticket = $null
+$script:seat = $null
+function Enter-Line {
+  if ("$env:NARRATOR_TICKET" -notmatch '^\d+$') { return $true }
+  $dir = Join-Path ([IO.Path]::GetTempPath()) 'claude-narrator-queue'
+  $mine = "$($env:NARRATOR_TICKET)-$PID"
+  try {
+    $null = New-Item -ItemType Directory -Force -Path $dir
+    $script:ticket = Join-Path $dir $mine
+    $null = New-Item -ItemType File -Force -Path $script:ticket
+    $script:seat = New-Object System.Threading.Mutex($false, 'Local\claude-narrator-line')
+  } catch { return $true }
+  $start = Get-Date
+  while ($true) {
+    $ahead = 0
+    try {
+      foreach ($file in @(Get-ChildItem -LiteralPath $dir -File | Sort-Object Name)) {
+        if ($file.Name -eq $mine) { break }
+        $owner = $null
+        if ($file.Name -match '^\d+-(\d+)$') { $owner = Get-Process -Id ([int]$Matches[1]) -ErrorAction SilentlyContinue }
+        # Gone: not a ticket, its process has ended, or one that started after it was written took its id.
+        $isGone = -not $owner
+        if (-not $isGone) { try { $isGone = $owner.StartTime -gt $file.CreationTime } catch { $isGone = $true } }
+        if ($isGone) { Remove-Item -LiteralPath $file.FullName -Force -ErrorAction SilentlyContinue; continue }
+        $ahead++
+      }
+    } catch { return $true }
+    if ($ahead -eq 0) {
+      try { if ($script:seat.WaitOne(0)) { return $true } } catch [System.Threading.AbandonedMutexException] { return $true }
+    }
+    if ($ahead -ge 3 -or ((Get-Date) - $start).TotalSeconds -ge 120) { Exit-Line; return $false }
+    Say '.'
+    Start-Sleep -Milliseconds 300
+  }
+}
+function Exit-Line {
+  if ($script:seat) { try { $script:seat.ReleaseMutex() } catch {} }
+  if ($script:ticket) { Remove-Item -LiteralPath $script:ticket -Force -ErrorAction SilentlyContinue }
+}
+
+if (-not (Enter-Line)) { Say 'skipped'; exit 0 }
 try {
-  Speak-OneCore
-} catch {
-  if ($script:isSpeaking) { exit 0 }
-  try { Speak-Sapi } catch { if (-not $script:isSpeaking) { Say "error: $($_.Exception.Message)" } }
+  try {
+    Speak-OneCore
+  } catch {
+    if ($script:isSpeaking) { exit 0 }
+    try { Speak-Sapi } catch { if (-not $script:isSpeaking) { Say "error: $($_.Exception.Message)" } }
+  }
+} finally {
+  Exit-Line
 }
 `
 
@@ -217,41 +268,65 @@ export function encodedCommand (script: string) {
 export const powershell = (script: string, program = 'powershell') => [program, '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-EncodedCommand', encodedCommand(script)]
 
 /**
- * The line every speaker waits in, on macOS and Linux, shared by every window. Each narration
- * takes a ticket (NARRATOR_TICKET, the time it was ready, then its own process id) in a folder
- * all the sessions see, and speaks once its is the oldest of the live ones: a ticket whose
- * process is gone, or that is older than a quarter of an hour (its process id may have been reused), is thrown away, so a window that was closed never holds the line. The folder is the user's own, so nobody else's tickets get in the way. The speaker
- * replaces this shell (`exec`), so the ticket lives exactly as long as the speech. A narration
- * that would wait behind three others, or for two minutes, is not said: it prints `skipped`.
+ * The line every speaker waits in on macOS and Linux, shared by every window: it runs the speaker
+ * given as its arguments once its turn comes. Each narration takes a ticket (NARRATOR_TICKET, then
+ * this shell's id) in a folder of the user's own, and speaks once its ticket is the oldest of the
+ * live ones and it holds the seat, a link no two can make at once, so one speaks at a time even when
+ * a ticket came in late. A ticket whose process is gone, or older than a quarter of an hour (its id
+ * may have been reused), is thrown away, so a window that was closed never holds the line; the shell
+ * takes its ticket and the seat away as the speech ends, or as it is ended. A narration that would
+ * wait behind three others, or for two minutes, is not said: it prints `skipped`.
  */
 export const QUEUE = String.raw`
-base=$TMPDIR
-[ -n "$base" ] || base=/tmp
-dir="$base/claude-narrator-queue-$(id -u)"
-mkdir -p "$dir" 2>/dev/null || exec "$@"
-mine="$dir/$NARRATOR_TICKET-$$"
-: > "$mine" 2>/dev/null || exec "$@"
-now=$(date +%s)
-tries=0
+case $NARRATOR_TICKET in '' | *[!0-9]*) exec "$@" ;; esac
+dir=$TMPDIR
+[ -n "$dir" ] || dir=/tmp
+dir="$dir/claude-narrator-queue-$(id -u)"
+here=$PWD
+mkdir -p "$dir" 2>/dev/null && cd "$dir" 2>/dev/null || exec "$@"
+mine=$NARRATOR_TICKET-$$
+: > "$mine" 2>/dev/null || { cd "$here"; exec "$@"; }
+pid=
+leave () {
+  if [ -n "$pid" ]; then kill "$pid" 2>/dev/null; fi
+  rm -f "$dir/$mine"
+  if [ "$(readlink "$dir/seat" 2>/dev/null)" = "$$" ]; then rm -f "$dir/seat"; fi
+  exit 0
+}
+trap leave TERM INT HUP PIPE
+# A ticket's two parts: the time it was ready, and its process.
+parts () { IFS=-; set -- $1; IFS=' '; born=$1; owner=$2; }
+start=$(date +%s)
 while :; do
+  now=$(date +%s)
   ahead=0
-  for f in "$dir"/*; do
+  for f in *-*; do
     [ -e "$f" ] || continue
-    owner=$(echo "$f" | sed 's/.*-//')
-    born=$(echo "$f" | sed 's|.*/||; s/-.*//')
-    # Gone: its process has ended, or it is older than any speech lasts (a reused process id).
-    if ! kill -0 "$owner" 2>/dev/null || [ $((now - born / 1000)) -gt 900 ]; then rm -f "$f"; continue; fi
     [ "$f" = "$mine" ] && break
+    # Gone: not a ticket, its process has ended, or older than any speech lasts (a reused process id).
+    case $f in *[!0-9-]* | -* | *- | *-*-*) rm -f "$f"; continue ;; esac
+    parts "$f"
+    if ! kill -0 "$owner" 2>/dev/null || [ $((now - born / 1000)) -gt 900 ]; then rm -f "$f"; continue; fi
     ahead=$((ahead + 1))
   done
-  [ "$ahead" -eq 0 ] && exec "$@"
-  tries=$((tries + 1))
-  now=$(date +%s)
-  if [ "$ahead" -ge 3 ] || [ "$tries" -gt 400 ]; then
+  # First in line, it takes the seat: one speaks at a time, even when a ticket came in late.
+  if [ "$ahead" -eq 0 ]; then
+    holder=$(readlink seat 2>/dev/null)
+    if [ -n "$holder" ] && ! kill -0 "$holder" 2>/dev/null; then rm -f seat; fi
+    ln -s "$$" seat 2>/dev/null && break
+  fi
+  if [ "$ahead" -ge 3 ] || [ $((now - start)) -ge 120 ]; then
     rm -f "$mine"
     echo skipped
     exit 0
   fi
+  echo . 2>/dev/null || leave
   sleep 0.3
 done
+cd "$here" 2>/dev/null
+"$@" &
+pid=$!
+wait "$pid"
+pid=
+leave
 `
