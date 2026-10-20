@@ -3,16 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>better-claude</title>
-  <meta name="description" content="Small plugins and mods that make your life (and Claude Code) better: Image Preview, Sub Meter, Commit and Narrator.">
+  <title>Free Claude Code Plugins &amp; Mods | better-claude</title>
+  <meta name="description" content="Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.">
+  <link rel="canonical" href="https://betterclaude.dev/">
+  <meta name="robots" content="max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="better-claude">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://betterclaude.dev/">
+  <meta property="og:title" content="Free Claude Code Plugins &amp; Mods | better-claude">
+  <meta property="og:description" content="Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.">
+  <meta property="og:image" content="https://betterclaude.dev/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="better-claude: free, open-source plugins and mods for Claude Code. Image previews, usage tracking, Git commits and spoken summaries.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@midudev">
+  <meta name="twitter:title" content="Free Claude Code Plugins &amp; Mods | better-claude">
+  <meta name="twitter:description" content="Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.">
+  <meta name="twitter:image" content="https://betterclaude.dev/og-image.png">
+  <meta name="twitter:image:alt" content="better-claude: free, open-source plugins and mods for Claude Code. Image previews, usage tracking, Git commits and spoken summaries.">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://betterclaude.dev/#website",
+      "url": "https://betterclaude.dev/",
+      "name": "better-claude",
+      "alternateName": "Better Claude",
+      "description": "Free, open-source Claude Code plugins by midudev. Preview images, track usage, automate Git commits and hear spoken summaries. Install in one prompt.",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name": "Miguel Ángel Durán",
+        "alternateName": "midudev",
+        "url": "https://github.com/midudev"
+      }
+    }
+  </script>
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#000000">
-  <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 -4 18 18" shape-rendering="crispEdges"%3E%3Cpath fill="rgb(215,119,87)" d="M3 0h1v2h-1zM3 2h1v2h-1zM4 0h1v2h-1zM5 0h1v2h-1zM4 2h1v2h-1zM6 0h1v2h-1zM7 0h1v2h-1zM6 2h1v2h-1zM7 2h1v2h-1zM8 0h1v2h-1zM9 0h1v2h-1zM8 2h1v2h-1zM9 2h1v2h-1zM10 0h1v2h-1zM11 0h1v2h-1zM10 2h1v2h-1zM11 2h1v2h-1zM12 0h1v2h-1zM13 0h1v2h-1zM12 2h1v2h-1zM14 0h1v2h-1zM15 0h1v2h-1zM14 2h1v2h-1zM15 2h1v2h-1zM1 4h1v2h-1zM2 4h1v2h-1zM3 4h1v2h-1zM3 6h1v2h-1zM4 4h1v2h-1zM5 4h1v2h-1zM4 6h1v2h-1zM5 6h1v2h-1zM6 4h1v2h-1zM7 4h1v2h-1zM6 6h1v2h-1zM7 6h1v2h-1zM8 4h1v2h-1zM9 4h1v2h-1zM8 6h1v2h-1zM9 6h1v2h-1zM10 4h1v2h-1zM11 4h1v2h-1zM10 6h1v2h-1zM11 6h1v2h-1zM12 4h1v2h-1zM13 4h1v2h-1zM12 6h1v2h-1zM13 6h1v2h-1zM14 4h1v2h-1zM15 4h1v2h-1zM14 6h1v2h-1zM15 6h1v2h-1zM16 4h1v2h-1zM17 4h1v2h-1zM3 8h1v2h-1zM5 8h1v2h-1zM13 8h1v2h-1zM15 8h1v2h-1z"/%3E%3C/svg%3E'>
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon.png">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg">
   <link rel="preload" href="fonts/geist-mono-727f8a0a.woff2" as="font" type="font/woff2" crossorigin>
   <style>
     /* Both fonts are cut down to what the page shows by fonts/subset.py: rerun it after changing the text. */
     @font-face { font-family: "Geist Mono"; src: url("fonts/geist-mono-727f8a0a.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
-    @font-face { font-family: "Geist Pixel"; src: url(data:font/woff2;base64,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) format("woff2"); font-display: block; }
+    @font-face { font-family: "Geist Pixel"; src: url(data:font/woff2;base64,d09GMgABAAAAAAfcAA8AAAAAo1wAAAd/AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbgRQcKgZgP1NUQVQqAEwRCAqCuyiCvFoBNgIkAygLFgAEIAWEIgcgG++iUZQwShDFlwfcYfjKFYQc15WVtKBVSjIEQffrITc7vc4emafx8LHft3PvN0mrPl0UMYliCRKZiCcSkSGTtwTizjboolH8Xa3twROZeAlTr7Zvuoe0QsoMLVECFLK739zCDAOyflr3Ld5bMNSZ8KkQ/wEMZfOZzZhjSERplO+3aZf6AeF4KHU5jMlq6BzG7NQG5kzKSk2/Wn6ze3ckC+5jYT1GvBpCFhojY1QLWa+isCksdbX11NQqhELi0NhzBKMohEEoCmFx4nr6Qvdc3E9IFmEt+yPdN4l75Z1YKXJIF+XCEHH88UEE2oAUQkMINM3IsO8/ONsxvttXUWV8yhA0brl101QZL48NlOXRgE9OU5yYN+BQcvXahYJQFVJJRVVNiPNDcDIMqiuS+4cM23tOaLX/Hpq4nO14qkI+ycA4du9F4pJMu8CW4Z0u3u6M+biK7tf/rynvjicDB9mTW/UEh7C1DvTcvnWE/cDx7cjGkfthJC/icKS0oYdDrHVavdhUH3rzTTITteL41UcKfGnxorioYGIVgo7b9y82meONTP7ixLl18tN/yCqDR0476TjZy8vIap02dLUJjY2ht3fae306Pk6Hg56e1+TZxsaMny/pecwwwlbs7TyxDkNoZ5OLPJA2jD30XgJlqoTHxMVhtdceYZmrYjomHojmSy7hYhIBW6B4TvXEDRGIPditGMEa9kYb+6bo+xAy6YKyETuygSBJQHZBOyws7EAksCt42EkbO+Lw7LH0bH51xMyFZ5yys3vMcoUZFnaO/gttbPBYwc7YxUPNtuyc3YqBLT63Y6uWnXE1YZ8gV1uRMOdjA/XKz13Rfij2uvMfwUCegMHMQ3WrBxB7SXRIDh0RBnYFtgAWWGsnsy360hESojfdUHaNJbT4LhElV0x21LOY+kbe74HMwMB23o50LrBT0c4AHtgMzOg1GxZQo3zyVrEPEDowZOtZlVefgVrlHx21B8hOvv/Sm6mHJgwOPHqLb4CIECM6ciub7KVnPvGkyU6TJ7PZjNAD1rlyKdB8Z1bhyY4BzfdOsAfeA7XzDSADSHe9ETs6EDPE5dbpb9/5JiGbLeK1ZxV2xC7Y2U42gbBiwfraGwrnprbdAVNxlZS5nhO7ggdd7TGzw57NL+SdnU2ssVOltAfvxHAiTWHldTIJJvk8XShVlS4PaZURrSLIr0SGjrnrVizml9t3zv17/un1rB0Wfh4oXGQ4Y4Bs54UOD+Om4ioaos3zDq79fpoFB6OM1AVg6Tm+xS2+DYWRHZsnIUFj/Bftv9AQNRBlSUQNUEVRkkXQEFXI3Z8vScOjvhsYjYMDBAmbnmOBrjNc+7miiiBOqndqqm7d5CeXfo1TXNM6ZYstPObyQPlvJcn2SN4sNDw9+9dzNQiapBOBXfcMyrYdg0Ys1dL/XKw5eE+/rdfQ2emVC+TzkdybETQUiHwStLHZCRv3hpVffVt96Dn14PLx5456rnCCZofiMro6TZKDo/CsvyWMRq6aT+OWVFg+MOtDetF6hn1jAYx1XtSeMXhgWVjX/nLX7ljTK/17heXDao6l474i+5EP64EFy205KaCwCJb5p+LuHUwe5nxooF55QgA0BsNqyXWarUBFpQ+Qu5YvnyLXTjZXAUX6Q1XSTmCUgrP0Ip2JD/7XGoOpLVEfVs5+tIxOJrG/Gff9f11vfqUQvvAYBZkEnoAkD3pBTtPydgFwkLkgIooTj4yRjssf9NwpAJ2EyX4vrVeDQqMhLCZiLA7+oXOnfFGwV0P0ReOsXGh3yNOvIiAW+INxGwe1fOUZqCSaWiiAZGs7kc8YnYlqjaT/w7BHx+IrudIkv1QRw5ZfaOlhhtngA/aNIegHsfNVNRXzPTsx6BxmjQdy0xwRlg9EPn7xgB03dljq3Tmsn6RKsefgKocNYbjfwQjgpRtIqJFoicRIywXpBb7VK7FjVqRzKD+lZ8R5OssNCFbFqelizy/FvRzsLpiKK7VEktd9HfFsBi4ycvzgRXRH7BTLyZV8uWoU2L3gNrs5fMDrBZ/VAS+f5EMfimY3cxeTHdke7t9Wy4mT/GLFkl7kvr9X7l7j5DG/GGz7Tl5/XiC9vsWQ7g8aHuhsCF/97wxkj1/3sL7tdPHf+DSkvqizWeOb/+ygxvnlRO6b7TqCSGgXW1gkW19FYIzZadZmaKm0TygK0yrj379gUCwQ7H7S77K9/VtdLH2At9/O/8O7feUnJoDJ9dxCVYLgf+Y7mw+GFIEDqvdeHW3yR47jwVtVj8C90cCa7q7vleNrpufzsKHZ2fQIhKsJG+5wiHIDz/FIGfq8y9S1UZas+5Zlc/5lxVBTZdVM2zd2LXflbBj48Tyzj0b3YhJweIjISMkoIHZ4gBgCAgsiVkwaEbhCRBuFeBqThQjhIaSzVCQlcYSD16cuEq40iqQ7YLoCMhzSU8Wx+DwVCmu/KHiqVBtw+GpKdmZKS0hdV1WHAVXX7P5h9XsPxonDo+gYjxxePAD7jgumPUW0PramBzpkv8uvAtXSWia4Pl5bQMKVFafPrgPKfhPrLd5Z/bzD1b6KzAMAAAA=) format("woff2"); font-display: block; }
     @font-face { font-family: "Caveat"; src: url(data:font/woff2;base64,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) format("woff2"); font-display: block; }
     /* Menlo sized to Geist Mono's box, so the swap does not move the text */
     @font-face { font-family: "Geist Mono Fallback"; src: local("Menlo"), local("Menlo-Regular"), local("SF Mono"), local("SFMono-Regular"), local("Consolas"), local("DejaVu Sans Mono"); size-adjust: 99.66%; ascent-override: 100.84%; descent-override: 29.6%; line-gap-override: 0%; }
@@ -54,13 +92,29 @@
 
     /* Hero: Clawd walks along the top of the title */
     .title { position: relative; display: inline-block; padding-top: 58px; }
-    .clawd { position: absolute; top: 4px; left: 0; width: 90px; height: 50px; will-change: transform; }
+    .clawd { position: absolute; top: 4px; left: 0; width: 90px; height: 50px; will-change: transform; cursor: pointer; }
     .clawd svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; }
     h1 {
       margin: 0;
       font: 400 clamp(44px, 11vw, 72px)/1 "Geist Pixel", "Geist Mono", "Geist Mono Fallback", monospace;
       letter-spacing: -0.015em;
     }
+    h1 .claude, .brand .claude { color: var(--clawd); }
+    /* When the plugins last changed: room kept for it, so the page does not move when it comes in */
+    .updated {
+      display: flex; align-items: center; gap: 9px; width: max-content;
+      margin: 14px 0 0; min-height: 21px;
+      color: var(--muted); font-size: 12px;
+      visibility: hidden; opacity: 0;
+      transition: opacity .4s, visibility .4s, color .2s;
+    }
+    .updated.is-known { visibility: visible; opacity: 1; }
+    .updated::before { content: ""; width: 7px; height: 7px; background: var(--clawd); }
+    .updated.is-fresh::before { animation: fresh 2.4s ease-out infinite; }
+    @keyframes fresh { from { box-shadow: 0 0 0 0 rgba(215, 119, 87, .55); } 70%, to { box-shadow: 0 0 0 6px rgba(215, 119, 87, 0); } }
+    .updated time { color: var(--soft); transition: color .2s; }
+    .updated:hover, .updated:hover time, .updated[aria-current], .updated[aria-current] time { color: var(--fg); }
+    @media (prefers-reduced-motion: reduce) { .updated.is-fresh::before { animation: none; } }
     .lede { margin: 22px 0 0; max-width: 44ch; color: var(--soft); font-size: 15px; }
     .lede a { color: var(--fg); border-bottom: 1px solid #333; transition: border-color .2s, color .2s; }
     .lede a:hover { color: var(--clawd); border-color: var(--clawd); }
@@ -117,7 +171,7 @@
     }
 
     /* Plugins */
-    .plugins { list-style: none; margin: 88px 0 0; padding: 0; counter-reset: plugin; }
+    .plugins { list-style: none; margin: 88px 0 0; padding: 0; }
     .plugin[hidden] { display: none; }
     .plugin {
       display: grid;
@@ -125,10 +179,83 @@
       gap: 8px 32px;
       padding: 30px 0;
       border-top: 1px solid var(--line);
-      counter-increment: plugin;
     }
-    .meta h2 { margin: 0; font-size: 15px; font-weight: 600; display: flex; gap: 12px; align-items: baseline; }
-    .meta h2::before { content: counter(plugin, decimal-leading-zero); color: var(--muted); font-size: 12px; font-weight: 400; }
+    /* Each plugin's pixel icon, 16 × 16 at 4px a pixel, over its name (beside it on a phone). Under the
+       pointer it hops and comes alive a pixel at a time: parts move by whole pixels, colors flash, and
+       strips of frames slide past the icon's box one frame at a time. */
+    .meta .icon { display: block; width: 64px; height: 64px; margin: 0 0 18px; shape-rendering: crispEdges; }
+    .icon .cut { fill: var(--bg); }
+    .icon .sand-0, .icon .sand-1, .icon .sand-3, .icon .sand-4, .icon .sparks-a, .icon .sparks-b { opacity: 0; }
+    .icon .sandglass { transform-origin: 8px 8px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .plugin:is(:hover, :has(:focus-visible)) .icon { animation: hop .36s steps(1); }
+      .plugin:is(:hover, :has(:focus-visible)) .icon * { animation-timing-function: steps(1); animation-iteration-count: infinite; }
+      .plugin:is(:hover, :has(:focus-visible)) .strip { animation: strip var(--d) steps(var(--n)) infinite; }
+      /* Image Preview: the pointer glides onto the picture and taps it; the frame lights, the sun comes up */
+      .plugin:is(:hover, :has(:focus-visible)) :is(.pointer, .frame, .sun) { animation-duration: 2s; }
+      .plugin:is(:hover, :has(:focus-visible)) .pointer { animation-name: glide; }
+      .plugin:is(:hover, :has(:focus-visible)) .frame { animation-name: tapped; }
+      .plugin:is(:hover, :has(:focus-visible)) .sun { animation-name: rise; }
+      /* Sub Meter and Commit run on strips: the needle revs and the dial fills after it; a light runs
+         from the first commit up the line and along the branch */
+      /* Narrator: the speaker thumps, and a wave goes out with each thump */
+      .plugin:is(:hover, :has(:focus-visible)) :is(.speaker, [class^="wave-"]) { animation-duration: 1.2s; }
+      .plugin:is(:hover, :has(:focus-visible)) .speaker { animation-name: thump; }
+      .plugin:is(:hover, :has(:focus-visible)) .wave-1 { animation-name: wave-1; }
+      .plugin:is(:hover, :has(:focus-visible)) .wave-2 { animation-name: wave-2; }
+      .plugin:is(:hover, :has(:focus-visible)) .wave-3 { animation-name: wave-3; }
+      /* After: the sand runs down and the glass turns over, from the frame it rests on */
+      .plugin:is(:hover, :has(:focus-visible)) :is(.sandglass, [class^="sand-"]) { animation-duration: 3.2s; animation-delay: -.896s; }
+      .plugin:is(:hover, :has(:focus-visible)) .sandglass { animation-name: turn; animation-timing-function: linear; }
+      .plugin:is(:hover, :has(:focus-visible)) .sand-0 { animation-name: sand-0; }
+      .plugin:is(:hover, :has(:focus-visible)) .sand-1 { animation-name: sand-1; }
+      .plugin:is(:hover, :has(:focus-visible)) .sand-2 { animation-name: sand-2; }
+      .plugin:is(:hover, :has(:focus-visible)) .sand-3 { animation-name: sand-3; }
+      .plugin:is(:hover, :has(:focus-visible)) .sand-4 { animation-name: sand-4; }
+      /* Use Haiku: the bolt flashes twice and shakes, sparks jumping off its tip */
+      .plugin:is(:hover, :has(:focus-visible)) :is(.striker, .bolt, .bolt-hi, [class^="sparks-"]) { animation-duration: 1.6s; }
+      .plugin:is(:hover, :has(:focus-visible)) .striker { animation-name: strike; }
+      .plugin:is(:hover, :has(:focus-visible)) .bolt { animation-name: bolt; }
+      .plugin:is(:hover, :has(:focus-visible)) .bolt-hi { animation-name: bolt-hi; }
+      .plugin:is(:hover, :has(:focus-visible)) .sparks-a { animation-name: sparks-a; }
+      .plugin:is(:hover, :has(:focus-visible)) .sparks-b { animation-name: sparks-b; }
+      /* Think Hard: the bulb flickers on, then its rays go out in pulses */
+      .plugin:is(:hover, :has(:focus-visible)) :is(.glass, .glint, [class^="rays-"]) { animation-duration: 2.4s; }
+      .plugin:is(:hover, :has(:focus-visible)) .glass { animation-name: glass; }
+      .plugin:is(:hover, :has(:focus-visible)) .glint { animation-name: glint; }
+      .plugin:is(:hover, :has(:focus-visible)) .rays-in { animation-name: rays-in; }
+      .plugin:is(:hover, :has(:focus-visible)) .rays-out { animation-name: rays-out; }
+      /* Token Meter: tokens stream up on one side and down on the other, each arrow coming round again */
+      .plugin:is(:hover, :has(:focus-visible)) .tokens-up { animation: tokens-up 1.6s steps(16) infinite; }
+      .plugin:is(:hover, :has(:focus-visible)) .tokens-down { animation: tokens-down 1.6s steps(16) infinite; }
+    }
+    @keyframes hop { 0% { transform: translateY(-4px); } 33% { transform: translateY(-8px); } 66% { transform: translateY(-4px); } }
+    @keyframes strip { to { transform: translateX(calc(var(--n) * -16px)); } }
+    @keyframes glide { 12.5% { transform: translate(-1px, -1px); } 25% { transform: translate(-2px, -2px); } 37.5% { transform: translate(-3px, -3px); } 75% { transform: translate(-2px, -2px); } 87.5% { transform: translate(-1px, -1px); } }
+    @keyframes tapped { 50% { fill: var(--clawd); } 62.5% { fill: var(--fg); } }
+    @keyframes rise { 50% { transform: translate(0, -1px); } 75% { transform: none; } }
+    @keyframes thump { 33.33% { transform: translate(1px, 0); } 41.67% { transform: none; } 50% { transform: translate(1px, 0); } 58.33% { transform: none; } 66.67% { transform: translate(1px, 0); } 75% { transform: none; } }
+    @keyframes wave-1 { 16.67% { opacity: 0; } 33.33% { opacity: 1; } }
+    @keyframes wave-2 { 16.67% { opacity: 0; } 50% { opacity: 1; } }
+    @keyframes wave-3 { 16.67% { opacity: 0; } 66.67% { opacity: 1; } }
+    @keyframes turn { 0%, 68% { transform: none; animation-timing-function: cubic-bezier(.5, -.4, .3, 1.4); } 84%, 100% { transform: rotate(180deg); } }
+    @keyframes sand-0 { 0% { opacity: 1; } 14% { opacity: 0; } }
+    @keyframes sand-1 { 14% { opacity: 1; } 28% { opacity: 0; } }
+    @keyframes sand-2 { 0% { opacity: 0; } 28% { opacity: 1; } 42% { opacity: 0; } }
+    @keyframes sand-3 { 42% { opacity: 1; } 56% { opacity: 0; } }
+    @keyframes sand-4 { 56% { opacity: 1; } }
+    @keyframes strike { 0% { transform: translate(-1px, 0); } 8% { transform: translate(1px, 0); } 16% { transform: translate(-1px, 0); } 24% { transform: none; } }
+    @keyframes bolt { 0% { fill: var(--fg); } 8% { fill: var(--clawd); } 16% { fill: var(--fg); } 24% { fill: var(--clawd); } }
+    @keyframes bolt-hi { 0% { fill: #fff; } 8% { fill: #f2a385; } 16% { fill: #fff; } 24% { fill: #f2a385; } }
+    @keyframes sparks-a { 8% { opacity: 1; } 16% { opacity: 0; } 24% { opacity: 1; } 32% { opacity: 0; } }
+    @keyframes sparks-b { 16% { opacity: 1; } 24% { opacity: 0; } 32% { opacity: 1; } 40% { opacity: 0; } }
+    @keyframes glass { 0% { fill: #94462e; } 6% { fill: #f2a385; } 10% { fill: #94462e; } 16% { fill: #f2a385; } }
+    @keyframes glint { 0% { fill: var(--clawd); } 6% { fill: #fff; } 10% { fill: var(--clawd); } 16% { fill: #fff; } }
+    @keyframes rays-in { 0% { opacity: 0; } 6% { opacity: 1; } 10% { opacity: 0; } 16% { opacity: 1; } 30% { opacity: 0; } 44% { opacity: 1; } 58% { opacity: 0; } 72% { opacity: 1; } 86% { opacity: 0; } }
+    @keyframes rays-out { 0% { opacity: 0; } 6% { opacity: 1; } 10% { opacity: 0; } 23% { opacity: 1; } 37% { opacity: 0; } 51% { opacity: 1; } 65% { opacity: 0; } 79% { opacity: 1; } 93% { opacity: 0; } }
+    @keyframes tokens-up { to { transform: translateY(-16px); } }
+    @keyframes tokens-down { to { transform: translateY(16px); } }
+    .meta h2 { margin: 0; font-size: 15px; font-weight: 600; }
     .body p { margin: 0 0 14px; color: var(--soft); }
     .body code { color: var(--fg); }
     .body .line { margin: 0 0 6px; color: var(--fg); white-space: pre-wrap; word-break: break-word; }
@@ -175,8 +302,9 @@
     }
     .image-window[hidden] { display: none; }
     .image-window img { display: block; width: min(480px, calc(100vw - 44px)); height: auto; }
-    /* Narrator: the switch at the footer's right end, green on and gray off, inverted under the
-       pointer as the terminal draws a control in focus. What it says lights up as it is said. */
+    /* Narrator: the switch at the footer's right end, green on and gray off, blue while it speaks with
+       a lighter blue sweeping across it, inverted under the pointer as the terminal draws a control in
+       focus. What it says lights up as it is said. */
     .voice {
       padding: 0; border: 0; background: none;
       font: inherit; color: var(--soft);
@@ -185,6 +313,10 @@
     .voice[aria-pressed="true"] { color: #87d787; }
     .voice:hover { background: var(--soft); color: #000; }
     .voice[aria-pressed="true"]:hover { background: #87d787; }
+    .voice[data-state="narrating"] { color: #b1b9f9; }
+    .voice[data-state="narrating"]:hover { background: #b1b9f9; }
+    .voice .sweep { color: #cfd7ff; }
+    .voice:hover .sweep { color: inherit; }
     .body .narration { color: var(--muted); }
     .body .narration .said { color: var(--soft); }
     /* A note in the margin, hand-written, its arrow drawn as the demo comes into view; gone once tried. */
@@ -208,7 +340,7 @@
     @media (prefers-reduced-motion: reduce) { .try.is-waiting path { stroke-dashoffset: 0; } .try.is-waiting span { opacity: 1; } }
     /* Source, docs and install: one per line, a pixel icon each. On hover the icon lights and
        nudges toward where the link goes, and a hairline draws under the label. */
-    .meta .links { display: grid; justify-items: start; gap: 2px; margin: 14px 0 0 30px; padding: 0; list-style: none; font-size: 12px; }
+    .meta .links { display: grid; justify-items: start; gap: 2px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 12px; }
     .links a, .links button {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 1px 0; border: 0; background: none;
@@ -279,6 +411,8 @@
     .reader-out svg, .reader-close svg { width: 14px; height: 14px; fill: currentColor; shape-rendering: crispEdges; }
     .reader-out:hover svg { color: var(--clawd); }
     .reader-tabs { display: flex; gap: 24px; margin-top: 12px; }
+    .reader-tabs[hidden] { display: none; }
+    .reader-head:has(.reader-tabs[hidden]) { padding-bottom: 18px; }
     .reader-tabs button {
       display: inline-flex; align-items: center; gap: 10px;
       margin-bottom: -1px; padding: 8px 0 11px;
@@ -321,6 +455,19 @@
     .doc th { color: var(--fg); font-weight: 600; background: #0b0b0b; }
     .doc img { max-width: 100%; height: auto; }
     .doc hr { margin: 28px 0; border: 0; border-top: 1px solid var(--line); }
+
+    /* Updates: the plugins' latest commits, by day, each under its plugin's name */
+    .doc .day { display: flex; align-items: center; gap: 12px; margin: 36px 0 18px; padding: 0; border: 0; color: var(--muted); font-size: 12px; font-weight: 400; }
+    .doc .day:first-child { margin-top: 0; }
+    .day::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+    .change { margin: 0 0 26px; }
+    .doc .change-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 2px; font-size: 12px; }
+    .change-plugin { color: var(--clawd); }
+    .change-kind { color: var(--muted); }
+    .doc .change-sha { margin-left: auto; color: var(--muted); border: 0; }
+    .doc .change h3 { margin: 0 0 8px; }
+    .change p, .change ul { margin: 0 0 10px; }
+    .doc .changes-more { margin-top: 36px; font-size: 12px; }
 
     /* Source: the plugin's files on the left, the one open on the right, numbered */
     .src { display: grid; grid-template-columns: 200px minmax(0, 1fr); height: 100%; }
@@ -376,6 +523,7 @@
     .brand .mini svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; }
     .brand b { display: block; color: var(--fg); font: 400 18px/1.1 "Geist Pixel", "Geist Mono", monospace; }
     .brand span { display: block; margin-top: 3px; }
+    .brand b .claude { display: inline; margin: 0; }
     .foot-links { display: flex; gap: 22px; margin: 0; padding: 0; list-style: none; }
     .foot-links a { color: var(--soft); transition: color .2s; }
     .foot-links a:hover { color: var(--clawd); }
@@ -389,6 +537,8 @@
     @media (max-width: 640px) {
       main { padding-top: 64px; }
       .plugin { grid-template-columns: 1fr; gap: 10px; }
+      .meta { display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: 18px; align-content: start; }
+      .meta .icon { grid-row: span 2; margin: 0; }
       .plugins { margin-top: 64px; }
     }
   </style>
@@ -409,9 +559,10 @@
     <header>
       <div class="title">
         <div class="clawd" id="clawd" aria-hidden="true"></div>
-        <h1>better-claude</h1>
+        <h1>better<span class="claude">claude</span></h1>
       </div>
-      <p class="lede">Small plugins and mods that make your life (and Claude Code) better, by <a href="https://github.com/midudev">@midudev</a>.</p>
+      <a class="updated" id="updated" href="https://github.com/midudev/better-claude/commits/main/plugins">plugins updated <time></time></a>
+      <p class="lede">Free, open-source plugins and mods for Claude Code, by <a href="https://github.com/midudev">@midudev</a>.</p>
 
       <section class="install" aria-label="Install">
         <ul class="picks">
@@ -437,7 +588,7 @@
 
     <ol class="plugins">
       <li class="plugin">
-        <div class="meta"><h2>Image Preview</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/image-preview"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/image-preview/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="image-preview"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="#9b9b9b" d="M5 7h1v1h-1zM4 8h3v1h-3zM3 9h5v1h-5zM11 9h1v1h-1zM2 10h7v1h-7zM10 10h3v1h-3zM1 11h12v1h-12z"/><path fill="#262626" d="M1 2h12v5h-12zM1 7h4v1h-4zM6 7h7v1h-7zM1 8h3v1h-3zM7 8h6v1h-6zM1 9h2v1h-2zM8 9h3v1h-3zM12 9h1v1h-1zM1 10h1v1h-1zM9 10h1v1h-1z"/><path class="frame" fill="#ececec" d="M0 1h14v1h-14zM0 2h1v10h-1zM13 2h1v10h-1zM0 12h14v1h-14z"/><g class="sun"><path fill="#d77757" d="M9 3h2v1h-2zM8 4h1v1h-1zM10 4h2v1h-2zM8 5h4v1h-4zM9 6h2v1h-2z"/><path fill="#f2a385" d="M9 4h1v1h-1z"/></g><g class="pointer"><path class="cut" d="M8 7h1v1h-1zM7 8h1v7h-1zM9 8h1v1h-1zM10 9h1v1h-1zM11 10h1v1h-1zM12 11h1v1h-1zM13 12h1v1h-1zM11 13h2v1h-2zM9 14h1v1h-1zM12 14h1v1h-1zM8 15h1v1h-1zM10 15h1v1h-1zM13 15h1v1h-1zM11 16h2v1h-2z"/><path fill="#ececec" d="M8 8h1v1h-1zM8 9h2v1h-2zM8 10h3v1h-3zM8 11h4v1h-4zM8 12h5v1h-5zM8 13h3v1h-3zM8 14h1v1h-1zM10 14h2v1h-2zM11 15h2v1h-2z"/></g></svg><h2>Image Preview</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/image-preview"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/image-preview/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="image-preview"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>Hover a pasted <code class="accent">[Image #1]</code>, while you write or in a prompt you sent, and the picture opens in a small window by the pointer. Click it to open it in Preview.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -447,7 +598,7 @@
       </li>
 
       <li class="plugin">
-        <div class="meta"><h2>Sub Meter</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/sub-meter"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/sub-meter/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="sub-meter"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="#ececec" d="M7 8h2v2h-2z"/><path fill="#5e5e5e" d="M5 1h6v1h-6zM3 2h10v1h-10zM2 3h4v1h-4zM10 3h4v1h-4zM1 4h3v1h-3zM12 4h3v1h-3zM1 5h2v1h-2zM13 5h2v1h-2zM0 6h3v1h-3zM13 6h3v1h-3zM0 7h2v4h-2zM14 7h2v4h-2zM0 11h3v1h-3zM13 11h3v1h-3zM1 12h2v1h-2zM13 12h2v1h-2zM1 13h3v1h-3zM12 13h3v1h-3zM2 14h1v1h-1zM13 14h1v1h-1z"/><g class="strip" style="--n: 10; --d: 2s"><path fill="#ececec" d="M119 3h1v5h-1zM151 3h1v5h-1zM9 4h1v2h-1zM105 4h1v2h-1zM132 5h2v1h-2zM8 6h2v1h-2zM26 6h3v1h-3zM90 6h3v1h-3zM104 6h2v1h-2zM133 6h2v1h-2zM8 7h1v1h-1zM25 7h2v1h-2zM89 7h2v1h-2zM104 7h1v1h-1zM134 7h2v1h-2zM25 8h1v1h-1zM41 8h5v1h-5zM73 8h5v1h-5zM89 8h1v1h-1zM57 9h1v1h-1zM57 10h3v1h-3zM59 11h2v1h-2z"/><path fill="#d77757" d="M5 1h6v1h-6zM21 1h6v1h-6zM37 1h6v1h-6zM53 1h6v1h-6zM69 1h6v1h-6zM85 1h6v1h-6zM101 1h6v1h-6zM117 1h2v1h-2zM149 1h2v1h-2zM3 2h8v1h-8zM19 2h10v1h-10zM35 2h10v1h-10zM51 2h10v1h-10zM67 2h10v1h-10zM83 2h10v1h-10zM99 2h8v1h-8zM115 2h4v1h-4zM147 2h4v1h-4zM2 3h4v1h-4zM18 3h4v1h-4zM26 3h4v1h-4zM34 3h4v1h-4zM42 3h4v1h-4zM50 3h4v1h-4zM58 3h4v1h-4zM66 3h4v1h-4zM74 3h4v1h-4zM82 3h4v1h-4zM90 3h4v1h-4zM98 3h4v1h-4zM114 3h4v1h-4zM130 3h1v1h-1zM146 3h4v1h-4zM1 4h3v1h-3zM17 4h3v1h-3zM28 4h2v1h-2zM33 4h3v1h-3zM44 4h3v1h-3zM49 4h3v1h-3zM60 4h3v1h-3zM65 4h3v1h-3zM76 4h3v1h-3zM81 4h3v1h-3zM92 4h2v1h-2zM97 4h3v1h-3zM113 4h3v1h-3zM129 4h3v1h-3zM145 4h3v1h-3zM1 5h2v1h-2zM17 5h2v1h-2zM33 5h2v1h-2zM45 5h2v1h-2zM49 5h2v1h-2zM61 5h2v1h-2zM65 5h2v1h-2zM77 5h2v1h-2zM81 5h2v1h-2zM97 5h2v1h-2zM113 5h2v1h-2zM129 5h2v1h-2zM145 5h2v1h-2zM0 6h3v1h-3zM16 6h3v1h-3zM32 6h3v1h-3zM45 6h6v1h-6zM61 6h6v1h-6zM77 6h6v1h-6zM96 6h3v1h-3zM112 6h3v1h-3zM128 6h3v1h-3zM144 6h3v1h-3zM0 7h2v4h-2zM16 7h2v4h-2zM32 7h2v4h-2zM46 7h4v2h-4zM62 7h4v4h-4zM78 7h4v2h-4zM96 7h2v4h-2zM112 7h2v4h-2zM128 7h2v4h-2zM144 7h2v4h-2zM48 9h2v2h-2zM80 9h2v2h-2zM0 11h3v1h-3zM16 11h3v1h-3zM32 11h3v1h-3zM48 11h3v1h-3zM61 11h6v1h-6zM80 11h3v1h-3zM96 11h3v1h-3zM112 11h3v1h-3zM128 11h3v1h-3zM144 11h3v1h-3zM1 12h2v1h-2zM17 12h2v1h-2zM33 12h2v1h-2zM49 12h2v1h-2zM62 12h1v1h-1zM65 12h2v1h-2zM81 12h2v1h-2zM97 12h2v1h-2zM113 12h2v1h-2zM129 12h2v1h-2zM145 12h2v1h-2zM1 13h3v1h-3zM17 13h3v1h-3zM33 13h3v1h-3zM49 13h3v1h-3zM65 13h3v1h-3zM81 13h3v1h-3zM97 13h3v1h-3zM113 13h3v1h-3zM129 13h3v1h-3zM145 13h3v1h-3zM2 14h1v1h-1zM18 14h1v1h-1zM34 14h1v1h-1zM50 14h1v1h-1zM66 14h1v1h-1zM82 14h1v1h-1zM98 14h1v1h-1zM114 14h1v1h-1zM130 14h1v1h-1zM146 14h1v1h-1z"/></g></svg><h2>Sub Meter</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/sub-meter"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/sub-meter/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="sub-meter"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>Your subscription usage, always at the bottom right: the 5-hour and the weekly windows take turns as a bar, with the time until each resets.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -457,7 +608,7 @@
       </li>
 
       <li class="plugin">
-        <div class="meta"><h2>Commit</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/commit"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/commit/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="commit"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="#9b9b9b" d="M2 6h2v4h-2zM12 6h2v1h-2zM11 7h2v1h-2zM10 8h2v1h-2zM8 9h3v1h-3zM5 10h4v1h-4z"/><path fill="#d77757" d="M1 0h4v1h-4zM11 0h4v1h-4zM0 1h6v1h-6zM10 1h6v1h-6zM0 2h2v2h-2zM4 2h2v2h-2zM10 2h2v2h-2zM14 2h2v2h-2zM0 4h6v1h-6zM10 4h6v1h-6zM1 5h4v1h-4zM11 5h4v1h-4zM1 10h4v1h-4zM0 11h6v1h-6zM0 12h2v2h-2zM4 12h2v2h-2zM0 14h6v1h-6zM1 15h4v1h-4z"/><g class="strip" style="--n: 8; --d: 1.44s"><path fill="#ececec" d="M97 0h4v1h-4zM107 0h4v1h-4zM96 1h6v1h-6zM106 1h6v1h-6zM96 2h2v2h-2zM100 2h2v2h-2zM106 2h2v2h-2zM110 2h2v2h-2zM96 4h6v1h-6zM106 4h6v1h-6zM97 5h4v1h-4zM107 5h4v1h-4zM82 6h2v1h-2zM92 6h2v1h-2zM66 7h2v1h-2zM75 7h1v1h-1zM92 7h1v1h-1zM50 8h2v1h-2zM74 8h2v1h-2zM34 9h2v1h-2zM56 9h2v1h-2zM74 9h1v1h-1zM17 10h4v1h-4zM37 10h3v1h-3zM56 10h1v1h-1zM16 11h6v1h-6zM16 12h2v2h-2zM20 12h2v2h-2zM16 14h6v1h-6zM17 15h4v1h-4z"/></g></svg><h2>Commit</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/commit"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/commit/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="commit"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>Type <code class="accent">/commit</code>, pick commit + push, commit only or a new branch, and Haiku 5.5 splits your changes into Conventional Commits, one per logical group, on the branch you are on. No secrets staged, no Claude attribution.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -471,12 +622,12 @@
       </li>
 
       <li class="plugin">
-        <div class="meta"><h2>Narrator</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/narrator"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/narrator/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="narrator"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><g class="speaker"><path fill="#ececec" d="M7 2h1v1h-1zM6 3h2v1h-2zM5 4h3v8h-3zM0 5h4v1h-4zM0 6h1v4h-1zM0 10h4v1h-4zM6 12h2v1h-2zM7 13h1v1h-1z"/><path fill="#9b9b9b" d="M4 5h1v1h-1zM1 6h4v4h-4zM4 10h1v1h-1z"/></g><path class="wave-1" fill="#d77757" d="M9 7h1v2h-1z"/><path class="wave-2" fill="#d77757" d="M10 4h1v1h-1zM11 5h1v2h-1zM12 7h1v2h-1zM11 9h1v2h-1zM10 11h1v1h-1z"/><path class="wave-3" fill="#d77757" d="M12 2h1v1h-1zM13 3h1v1h-1zM14 4h1v2h-1zM15 6h1v4h-1zM14 10h1v2h-1zM13 12h1v1h-1zM12 13h1v1h-1z"/></svg><h2>Narrator</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/narrator"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/narrator/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="narrator"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
-          <p>Click <code class="accent">⏸︎ narrator off</code> at the bottom right, or type <code class="accent">/narrator</code>, and after each turn Claude tells you out loud what it did, in the language you wrote in, with the best free voice your system has: Siri's on macOS, Narrator's on Windows, speech-dispatcher's on Linux.</p>
+          <p>Click <code class="accent">⏸︎ narrator off</code> at the bottom right, or type <code class="accent">/narrator</code>, and after each turn Claude tells you out loud what it did, in the language you wrote in, with the best free voice your system has: Siri's on macOS, Narrator's on Windows, speech-dispatcher's on Linux. While it speaks the switch reads <code class="accent">⏹︎ narrating</code>, and a click stops it.</p>
           <div class="demo" role="group" aria-label="Demo" id="narrator-demo">
             <p class="line"><span class="p">❯ </span>add a dark mode toggle to the settings</p>
-            <p class="line"><span class="accent">⏺</span> Added the toggle to <code>settings/page.tsx</code>. It remembers your choice, and the 12 tests pass.</p>
+            <p class="line"><span class="accent">⏺</span> Added a dark mode toggle to <code>settings/page.tsx</code>, next to the language picker. It saves your choice in <code>localStorage</code> and applies it before the first paint, so the page never flashes white. I also wrote two tests for it, and all 12 pass.</p>
             <p class="line narration" data-lang="en" hidden>I added a dark mode switch to the settings page. It remembers what you pick, and all twelve tests pass.</p>
             <p class="line footer-line"><span class="mode">⏵⏵ auto mode on</span><button type="button" class="voice" id="voice" aria-pressed="false">⏸︎ narrator off</button></p>
             <div class="try is-waiting" id="try" aria-hidden="true">
@@ -488,7 +639,7 @@
       </li>
 
       <li class="plugin" hidden>
-        <div class="meta"><h2>After</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/after"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/after/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="after"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><g class="sandglass"><path fill="#ececec" d="M2 1h12v1h-12zM3 2h1v2h-1zM12 2h1v2h-1zM4 4h1v1h-1zM11 4h1v1h-1zM5 5h1v1h-1zM10 5h1v1h-1zM6 6h1v1h-1zM9 6h1v1h-1zM8 7h1v1h-1zM7 8h1v1h-1zM6 9h1v1h-1zM9 9h1v1h-1zM5 10h1v1h-1zM10 10h1v1h-1zM4 11h1v1h-1zM11 11h1v1h-1zM3 12h1v2h-1zM12 12h1v2h-1zM2 14h12v1h-12z"/><path class="sand-0" fill="#d77757" d="M4 2h8v2h-8zM5 4h6v1h-6zM6 5h4v1h-4zM7 6h2v1h-2z"/><path class="sand-1" fill="#d77757" d="M4 3h8v1h-8zM5 4h6v1h-6zM6 5h4v1h-4zM7 6h2v1h-2zM7 7h1v1h-1zM8 8h1v5h-1zM4 13h8v1h-8z"/><path class="sand-2" fill="#d77757" d="M5 4h6v1h-6zM6 5h4v1h-4zM7 6h2v1h-2zM7 7h1v1h-1zM8 8h1v4h-1zM4 12h8v2h-8z"/><path class="sand-3" fill="#d77757" d="M6 5h4v1h-4zM7 6h2v1h-2zM7 7h1v1h-1zM8 8h1v3h-1zM5 11h6v1h-6zM4 12h8v2h-8z"/><path class="sand-4" fill="#d77757" d="M7 9h2v1h-2zM6 10h4v1h-4zM5 11h6v1h-6zM4 12h8v2h-8z"/></g></svg><h2>After</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/after"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/after/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="after"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>A prompt queue. Keep typing while Claude works: <code>/after &lt;task&gt;</code> runs it when the current task is done, without steering it.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -498,7 +649,7 @@
       </li>
 
       <li class="plugin" hidden>
-        <div class="meta"><h2>Use Haiku</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/use-haiku"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/use-haiku/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="use-haiku"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><g class="striker"><path class="bolt" fill="#d77757" d="M7 2h7v1h-7zM6 3h7v1h-7zM5 4h7v1h-7zM4 5h7v1h-7zM8 6h6v1h-6zM2 7h12v1h-12zM2 8h11v1h-11zM7 9h5v1h-5zM6 10h5v1h-5zM5 11h4v1h-4zM4 12h3v1h-3zM3 13h2v1h-2zM3 14h1v1h-1z"/><path class="bolt-hi" fill="#f2a385" d="M8 1h6v1h-6zM7 2h1v1h-1zM6 3h1v1h-1zM5 4h1v1h-1zM4 5h1v1h-1zM3 6h5v1h-5z"/></g><path class="sparks-a" fill="#f2a385" d="M1 12h1v1h-1zM6 13h1v1h-1zM5 15h1v1h-1z"/><path class="sparks-b" fill="#f2a385" d="M0 11h1v1h-1zM0 14h1v1h-1zM6 14h1v1h-1zM7 15h1v1h-1z"/></svg><h2>Use Haiku</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/use-haiku"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/use-haiku/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="use-haiku"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>Start a prompt with <code class="accent">_</code> and that turn runs on Haiku, its subagents too. You see it as you type, on the spinner and under the answer. Every other prompt keeps the session's model.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -508,7 +659,7 @@
       </li>
 
       <li class="plugin" hidden>
-        <div class="meta"><h2>Think Hard</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/think-hard"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/think-hard/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="think-hard"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="#ececec" d="M6 3h5v1h-5zM5 4h1v1h-1zM11 4h1v1h-1zM4 5h1v4h-1zM12 5h1v4h-1zM5 9h1v1h-1zM11 9h1v1h-1zM6 10h1v1h-1zM10 10h1v1h-1z"/><path fill="#9b9b9b" d="M6 11h5v1h-5zM6 13h5v1h-5z"/><path fill="#5e5e5e" d="M6 12h5v1h-5zM7 14h3v1h-3z"/><path class="glass" fill="#d77757" d="M6 4h5v1h-5zM5 5h1v2h-1zM8 5h4v1h-4zM7 6h5v1h-5zM5 7h7v2h-7zM6 9h5v1h-5zM7 10h3v1h-3z"/><path class="glint" fill="#f2a385" d="M6 5h2v1h-2zM6 6h1v1h-1z"/><path class="rays-in" fill="#d77757" d="M8 1h1v1h-1zM4 2h1v1h-1zM12 2h1v1h-1zM2 6h1v1h-1zM14 6h1v1h-1z"/><path class="rays-out" fill="#d77757" d="M8 0h1v1h-1zM3 1h1v1h-1zM13 1h1v1h-1zM1 6h1v1h-1zM15 6h1v1h-1z"/></svg><h2>Think Hard</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/think-hard"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/think-hard/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="think-hard"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>Start a prompt with <code class="accent">+</code> and that turn thinks at max effort. Every other prompt keeps the session's effort.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -518,7 +669,7 @@
       </li>
 
       <li class="plugin" hidden>
-        <div class="meta"><h2>Token Meter</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/token-meter"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/token-meter/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="token-meter"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
+        <div class="meta"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="tokens-up" fill="#afd7ff" d="M4 1h2v1h-2zM3 2h4v1h-4zM2 3h6v1h-6zM4 4h2v6h-2zM4 17h2v1h-2zM3 18h4v1h-4zM2 19h6v1h-6zM4 20h2v6h-2z"/><path class="tokens-down" fill="#87d787" d="M10 -10h2v6h-2zM8 -4h6v1h-6zM9 -3h4v1h-4zM10 -2h2v1h-2zM10 6h2v6h-2zM8 12h6v1h-6zM9 13h4v1h-4zM10 14h2v1h-2z"/></svg><h2>Token Meter</h2><ul class="links"><li><a data-panel="source" href="https://github.com/midudev/better-claude/tree/main/plugins/token-meter"><svg aria-hidden="true"><use href="#i-source"/></svg><span>source</span></a></li><li><a data-panel="docs" href="https://github.com/midudev/better-claude/blob/main/plugins/token-meter/README.md"><svg aria-hidden="true"><use href="#i-docs"/></svg><span>docs</span></a></li><li><button type="button" data-install="token-meter"><svg aria-hidden="true"><use class="arrow" href="#i-arrow"/><use class="tray" href="#i-tray"/><use class="check" href="#i-check"/></svg><span>install</span></button></li></ul></div>
         <div class="body">
           <p>After each turn, the line under the prompt ends with its tokens and the session's running total, in color.</p>
           <div class="demo" role="group" aria-label="Demo">
@@ -532,7 +683,7 @@
       <div class="foot-top">
         <div class="brand">
           <div class="mini" data-clawd aria-hidden="true"></div>
-          <div><b>better-claude</b><span>Small plugins and mods for Claude Code.</span></div>
+          <div><b>better<span class="claude">claude</span></b><span>Small plugins and mods for Claude Code.</span></div>
         </div>
         <ul class="foot-links">
           <li><a href="https://github.com/midudev/better-claude">GitHub</a></li>
@@ -572,11 +723,17 @@
 
   <script>
     (() => {
-      // Clawd, glyph for glyph as Claude Code draws it (default, look-left, look-right and arms-up poses).
+      const $ = (selector, context = document) => context.querySelector(selector)
+      const $$ = (selector, context = document) => [...context.querySelectorAll(selector)]
+
+      // Clawd, glyph for glyph as Claude Code draws it (default, look-left, look-right and arms-up poses),
+      // and two of the page's own: the right arm up alone, its hand high and then lower, to wave.
       const QUADRANTS = { ' ': 0, '█': 15, '▀': 12, '▄': 3, '▌': 10, '▐': 5, '▖': 2, '▗': 1, '▘': 8, '▝': 4, '▙': 11, '▚': 9, '▛': 14, '▜': 13, '▞': 6, '▟': 7 }
       const ARMS = {
         down: { r1L: ' ▐', r1R: '', r2L: '▝▜', r2R: '█▀' },
-        up: { r1L: '▗▟', r1R: '▄', r2L: ' ▜', r2R: '█▘' }
+        up: { r1L: '▗▟', r1R: '▄', r2L: ' ▜', r2R: '█▘' },
+        waveUp: { r1L: ' ▐', r1R: '▐', r2L: '▝▜', r2R: '█▘' },
+        waveDown: { r1L: ' ▐', r1R: '▄', r2L: '▝▜', r2R: '█▘' }
       }
       const EYES = { open: '▛███▛█', left: '▟███▟█', right: '█▟███▟' }
       const FEET = { both: ' ▝▝   ▝▝ ', left: ' ▝▝      ', right: '      ▝▝ ' }
@@ -598,12 +755,13 @@
         return `<svg viewBox="0 0 18 10"><path fill="rgb(215,119,87)" d="${d}"/></svg>`
       }
 
-      const clawd = document.getElementById('clawd')
+      const clawd = $('#clawd')
       const title = clawd.parentElement
       let reduce = false
       try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches } catch (e) {}
 
       let x = 0
+      let y = 0
       let dir = 1
       let pauseUntil = 0
       let last = 0
@@ -611,6 +769,12 @@
       let range = 0
       let frame = 0
       const SPEED = 26 // px per second
+      // A click: he stops, jumps with his arms up and waves, then walks on.
+      let greeting = 0 // when it began, 0 when he is not greeting
+      const JUMP_MS = 420
+      const JUMP_PX = 16
+      const WAVE_MS = 190
+      const WAVES = 4
 
       function show (next) {
         const key = (next.arms || '') + (next.eyes || '') + (next.feet || '')
@@ -623,11 +787,37 @@
       if ('ResizeObserver' in window) new ResizeObserver(measure).observe(title)
       else addEventListener('resize', measure)
 
+      // While he greets: the pose and height for `now`, or false once he is done.
+      function greet (now) {
+        const t = Math.max(0, now - greeting)
+        if (t < JUMP_MS) {
+          const p = t / JUMP_MS
+          y = reduce ? 0 : -4 * JUMP_PX * p * (1 - p)
+          show({ arms: 'up' })
+          return true
+        }
+        y = 0
+        const wave = Math.floor((t - JUMP_MS) / WAVE_MS)
+        if (wave < WAVES * 2) {
+          show({ arms: wave % 2 ? 'waveDown' : 'waveUp' })
+          return true
+        }
+        greeting = 0
+        return false
+      }
+
       function tick (now) {
         const dt = last ? Math.min(now - last, 100) / 1000 : 0
         last = now
 
-        if (now < pauseUntil) {
+        if (greeting && greet(now)) {
+          // Stopped where he is till the wave ends.
+        } else if (reduce) {
+          // Without motion he only greets: standing still again, the loop ends.
+          show({})
+          frame = 0
+          return
+        } else if (now < pauseUntil) {
           // At each end: look around, then throw the arms up.
           const left = pauseUntil - now
           show(left > 1100 ? { eyes: dir > 0 ? 'right' : 'left' } : left > 500 ? { arms: 'up' } : {})
@@ -640,15 +830,42 @@
           }
           show({ feet: Math.floor(now / 180) % 2 ? 'left' : 'right' })
         }
-        clawd.style.transform = `translate3d(${x}px, 0, 0)`
+        clawd.style.transform = `translate3d(${x}px, ${y}px, 0)`
         frame = requestAnimationFrame(tick)
+      }
+
+      // The jump's sound: a short square-wave rise, as an 8-bit game's, made on the spot.
+      let sound
+      function chirp () {
+        try {
+          sound ??= new AudioContext()
+          if (sound.state === 'suspended') sound.resume()
+          const at = sound.currentTime
+          const tone = sound.createOscillator()
+          const gain = sound.createGain()
+          tone.type = 'square'
+          tone.frequency.setValueAtTime(330, at)
+          tone.frequency.exponentialRampToValueAtTime(880, at + 0.14)
+          gain.gain.setValueAtTime(0.045, at)
+          gain.gain.exponentialRampToValueAtTime(0.001, at + 0.18)
+          tone.connect(gain).connect(sound.destination)
+          tone.start(at)
+          tone.stop(at + 0.18)
+        } catch (e) {}
       }
 
       const start = () => { if (!frame) { last = 0; frame = requestAnimationFrame(tick) } }
       const stop = () => { cancelAnimationFrame(frame); frame = 0 }
 
+      clawd.addEventListener('click', () => {
+        if (greeting) return
+        greeting = performance.now()
+        chirp()
+        start()
+      })
+
       show({})
-      document.querySelectorAll('[data-clawd]').forEach(el => { el.innerHTML = draw({}) })
+      $$('[data-clawd]').forEach(el => { el.innerHTML = draw({}) })
       if (!reduce) {
         // Only walk while the title is on screen.
         if ('IntersectionObserver' in window) {
@@ -658,10 +875,47 @@
         }
       }
 
+      // When the plugins last changed: the latest commit to plugins/. The last 30 are read in one API
+      // call, kept for the visit (the API allows 60 an hour), and the updates panel lists them.
+      const updated = $('#updated')
+      const updatedAt = $('time', updated)
+      const UNITS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]]
+      const relative = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+      function ago (date) {
+        const seconds = (Date.now() - date) / 1000
+        const [unit, size] = UNITS.find(([, size]) => seconds >= size) ?? []
+        return unit ? relative.format(-Math.floor(seconds / size), unit) : 'just now'
+      }
+      let changes
+      const changesOf = () => (changes ??= (async () => {
+        try { const kept = sessionStorage.getItem('better-claude:changes'); if (kept) return JSON.parse(kept) } catch (e) {}
+        const response = await fetch('https://api.github.com/repos/midudev/better-claude/commits?path=plugins&per_page=30')
+        if (!response.ok) throw new Error(String(response.status))
+        const list = (await response.json()).map(c => ({ sha: c.sha, date: c.commit.committer.date, message: c.commit.message, isMerge: c.parents.length > 1 }))
+        try { sessionStorage.setItem('better-claude:changes', JSON.stringify(list)) } catch (e) {}
+        return list
+      })().catch(error => { changes = undefined; throw error }))
+      async function showUpdated () {
+        const [latest] = await changesOf()
+        if (!latest) return
+        const date = latest.date
+        const when = new Date(date)
+        updatedAt.dateTime = date
+        updatedAt.title = when.toLocaleString('en', { dateStyle: 'long', timeStyle: 'short' })
+        const paint = () => {
+          updatedAt.textContent = ago(when)
+          updated.classList.toggle('is-fresh', Date.now() - when < 86400000)
+        }
+        paint()
+        setInterval(paint, 60000)
+        updated.classList.add('is-known')
+      }
+      showUpdated().catch(() => {})
+
       // Install prompt: every plugin picked by default
-      const picks = [...document.querySelectorAll('.picks li:not([hidden]) .pick')]
-      const out = document.getElementById('prompt')
-      const copyPrompt = document.getElementById('copy-prompt')
+      const picks = $$('.picks li:not([hidden]) .pick')
+      const out = $('#prompt')
+      const copyPrompt = $('#copy-prompt')
 
       function installPrompt (names) {
         const one = names.length === 1
@@ -671,7 +925,7 @@
           'claude plugin marketplace add midudev/better-claude',
           ...names.map(name => `claude plugin install ${name}@better-claude`),
           '',
-          `Then tell me to restart Claude Code so ${one ? 'it loads' : 'they load'}.`
+          `Then tell me to restart Claude Code so ${one ? 'it loads' : 'they load'}, and to get new versions on their own by turning on auto-update: /plugin → Marketplaces → better-claude → Enable auto-update.`
         ].join('\n')
       }
 
@@ -720,7 +974,7 @@
       copyPrompt.addEventListener('click', () => flash(copyPrompt, promptText(), 'Copied', 'Copy failed'))
 
       // Sub Meter: the 5-hour and the weekly windows take turns, as in the footer (there every 8 seconds).
-      const meter = document.getElementById('sub-meter')
+      const meter = $('#sub-meter')
       const WINDOWS = [{ label: '5h', percent: 58, resets: '2h 10m' }, { label: 'week', percent: 31, resets: '3d 4h' }]
       let meterWindow = 0
       setInterval(() => {
@@ -732,8 +986,8 @@
 
       // Image Preview: the picture opens by the pointer while it is on the chip, above it and to its
       // right, under it or to its left where there is no room, never over it, as the mod's window does.
-      const chip = document.getElementById('image-chip')
-      const imageWindow = document.getElementById('image-window')
+      const chip = $('#image-chip')
+      const imageWindow = $('#image-window')
       const GAP = 18
       const EDGE = 8
       function open (x, y) {
@@ -770,13 +1024,14 @@
       chip.addEventListener('blur', close)
       addEventListener('keydown', e => { if (e.key === 'Escape') close() })
       addEventListener('scroll', close, { passive: true })
-      // Narrator: the switch turns it on and Claude says what the turn did. A browser cannot reach the
-      // Siri voices, so the clip was recorded with the best one (narrator/record.swift); where it cannot
+      // Narrator: the switch turns it on and Claude says what the turn did. While it speaks the switch
+      // reads narrating, and a click stops it, the narrator still on. A browser cannot reach the Siri
+      // voices, so the clip was recorded with the best one (narrator/record.swift); where it cannot
       // play, the browser's own voice reads the line.
-      const narratorDemo = document.getElementById('narrator-demo')
-      const voice = document.getElementById('voice')
-      const tryIt = document.getElementById('try')
-      const narration = narratorDemo.querySelector('.narration')
+      const narratorDemo = $('#narrator-demo')
+      const voice = $('#voice')
+      const tryIt = $('#try')
+      const narration = $('.narration', narratorDemo)
       const said = narration.textContent.trim()
       narration.setAttribute('aria-hidden', 'true')
       const clip = new Audio()
@@ -784,6 +1039,10 @@
       clip.src = 'narrator/en.m4a'
       let lit = -1
       let following = 0
+      // Each narration's run: the late callbacks of one silenced see a newer run and do nothing.
+      let run = 0
+      let isSpeaking = false
+      let sweep = 0
 
       // The note's arrow draws itself the first time the demo is in view.
       if ('IntersectionObserver' in window && !reduce) {
@@ -812,26 +1071,64 @@
         if (clip.duration > 0) light(said.length * clip.currentTime / clip.duration)
         following = clip.paused ? 0 : requestAnimationFrame(follow)
       }
-      function setVoice (on) {
-        voice.setAttribute('aria-pressed', String(on))
-        voice.textContent = on ? '⏵ narrator on' : '⏸︎ narrator off'
+
+      // The switch's labels as the mod draws them; narrating's by cells, the stop sign kept with its
+      // selector. Its sweep as in the terminal: three cells wide, a cell a tenth of a second, then a
+      // pause of four steps.
+      const SWITCH = { on: '\u23F5 narrator on', off: '\u23F8\uFE0E narrator off' }
+      const NARRATING = ['\u23F9\uFE0E', ...' narrating']
+      const SWEEP_WIDTH = 3
+      const SWEEP_PAUSE = 4
+      function sweepAt (step) {
+        const at = step % (NARRATING.length + SWEEP_WIDTH + SWEEP_PAUSE) - SWEEP_WIDTH
+        const start = Math.min(Math.max(at, 0), NARRATING.length)
+        const end = Math.min(Math.max(at + SWEEP_WIDTH, 0), NARRATING.length)
+        const under = document.createElement('span')
+        under.className = 'sweep'
+        under.textContent = NARRATING.slice(start, end).join('')
+        voice.replaceChildren(NARRATING.slice(0, start).join(''), under, NARRATING.slice(end).join(''))
+      }
+      function setVoice (state) {
+        clearInterval(sweep)
+        voice.dataset.state = state
+        voice.setAttribute('aria-pressed', String(state !== 'off'))
+        if (state !== 'narrating') { voice.textContent = SWITCH[state]; return }
+        let step = 0
+        sweepAt(step)
+        if (!reduce) sweep = setInterval(() => sweepAt(++step), 100)
+      }
+      // Narrating from the moment the voice starts till it ends, then on again.
+      function speaking (from) {
+        if (from !== run) return
+        isSpeaking = true
+        setVoice('narrating')
+      }
+      function finish (from) {
+        if (from !== run) return
+        light(said.length)
+        isSpeaking = false
+        setVoice('on')
       }
 
       // The browser's own synthesizer, the best English voice it has, lit word by word.
-      function speakInBrowser () {
+      function speakInBrowser (from) {
         if (!('speechSynthesis' in window)) return
         const voices = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith('en'))
         const rank = v => (/siri/i.test(v.name) ? 8 : 0) + (/premium|enhanced|natural|neural/i.test(v.name) ? 4 : 0) + (v.localService ? 0 : 2) + (v.lang === 'en-US' ? 1 : 0)
         const utterance = new SpeechSynthesisUtterance(said)
         utterance.lang = 'en-US'
         utterance.voice = voices.sort((a, b) => rank(b) - rank(a))[0] ?? null
-        utterance.onboundary = e => light(e.charIndex + (e.charLength || 0))
-        utterance.onend = () => light(said.length)
+        utterance.onstart = () => speaking(from)
+        utterance.onboundary = e => { if (from === run) light(e.charIndex + (e.charLength || 0)) }
+        utterance.onend = () => finish(from)
+        utterance.onerror = () => finish(from)
         speechSynthesis.cancel()
         speechSynthesis.speak(utterance)
       }
 
       function silence () {
+        run++
+        isSpeaking = false
         clip.pause()
         cancelAnimationFrame(following)
         if ('speechSynthesis' in window) speechSynthesis.cancel()
@@ -841,28 +1138,35 @@
       const warm = () => { if (clip.preload === 'none') { clip.preload = 'auto'; clip.load() } }
       voice.addEventListener('pointerenter', warm)
       voice.addEventListener('focus', warm)
-      // Off by default; on, it says what the turn did. Off again stops it.
+      // Off by default; on, it says what the turn did. While it speaks a click stops it and leaves it
+      // on; off again stops it too.
       voice.addEventListener('click', () => {
+        if (isSpeaking) {
+          silence()
+          setVoice('on')
+          return
+        }
         const on = voice.getAttribute('aria-pressed') !== 'true'
-        setVoice(on)
         silence()
+        setVoice(on ? 'on' : 'off')
         narration.hidden = !on
         if (!on) return
         narratorDemo.dataset.tried = ''
         lit = -1
         light(0)
         clip.currentTime = 0
-        clip.play().then(follow, speakInBrowser)
+        const from = run
+        clip.play().then(() => { speaking(from); follow() }, () => { if (from === run) speakInBrowser(from) })
       })
-      clip.addEventListener('ended', () => light(said.length))
+      clip.addEventListener('ended', () => finish(run))
 
       // Each plugin's install: the same prompt for that plugin alone, and a toast that says where it goes.
-      const toast = document.getElementById('toast')
+      const toast = $('#toast')
       let toastTimer = 0
-      const installs = [...document.querySelectorAll('[data-install]')]
+      const installs = $$('[data-install]')
       const resetInstalls = () => installs.forEach(b => { delete b.dataset.state; b.lastElementChild.textContent = 'install' })
       installs.forEach(b => b.addEventListener('click', async () => {
-        const name = b.closest('.meta').querySelector('h2').textContent
+        const name = $('h2', b.closest('.meta')).textContent
         const ok = await copy(installPrompt([b.dataset.install]))
         resetInstalls()
         b.dataset.state = ok ? 'copied' : 'failed'
@@ -878,6 +1182,7 @@
       const RAW = `https://raw.githubusercontent.com/${REPO}/main/`
       const BLOB = `https://github.com/${REPO}/blob/main/`
       const TREE = `https://github.com/${REPO}/tree/main/`
+      const CHANGES = `https://github.com/${REPO}/commits/main/plugins`
       const LIBS = [
         ['https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js', 'sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi'],
         ['https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js', 'sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a'],
@@ -885,17 +1190,18 @@
       ]
       const LANGUAGES = { ts: 'typescript', tsx: 'typescript', js: 'javascript', mjs: 'javascript', json: 'json', md: 'markdown', py: 'python', sh: 'bash', yml: 'yaml', yaml: 'yaml', css: 'css', html: 'xml', svg: 'xml' }
       const root = document.documentElement
-      const reader = document.getElementById('reader')
-      const readerTitle = document.getElementById('reader-title')
-      const readerName = document.getElementById('reader-name')
-      const readerPath = document.getElementById('reader-path')
-      const readerOut = document.getElementById('reader-out')
-      const readerBody = document.getElementById('reader-body')
-      const tabs = [...reader.querySelectorAll('[data-tab]')]
-      const panelLinks = [...document.querySelectorAll('.links a[data-panel]')]
-      const pluginOf = el => el.closest('.links').querySelector('[data-install]').dataset.install
+      const reader = $('#reader')
+      const readerTitle = $('#reader-title')
+      const readerName = $('#reader-name')
+      const readerPath = $('#reader-path')
+      const readerOut = $('#reader-out')
+      const readerBody = $('#reader-body')
+      const tablist = $('.reader-tabs', reader)
+      const tabs = $$('[data-tab]', reader)
+      const panelLinks = $$('.links a[data-panel]')
+      const pluginOf = el => $('[data-install]', el.closest('.links')).dataset.install
       const titles = {}
-      document.querySelectorAll('.plugin').forEach(li => { titles[li.querySelector('[data-install]').dataset.install] = li.querySelector('h2').textContent })
+      $$('.plugin').forEach(li => { titles[$('[data-install]', li).dataset.install] = $('h2', li).textContent })
       const esc = text => text.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
       const note = html => `<p class="reader-note">${html}</p>`
       const LOADING = note('loading<span class="cursor" aria-hidden="true"></span>')
@@ -963,7 +1269,7 @@
         const doc = document.createElement('article')
         doc.className = 'doc'
         doc.innerHTML = DOMPurify.sanitize(marked.parse(markdown))
-        doc.querySelectorAll('a[href]').forEach(a => {
+        $$('a[href]', doc).forEach(a => {
           const href = a.getAttribute('href')
           if (href.startsWith('#')) return
           const url = new URL(href, base)
@@ -972,9 +1278,46 @@
           else Object.assign(a, { target: '_blank', rel: 'noopener' })
           a.href = url.href
         })
-        doc.querySelectorAll('img[src]').forEach(img => { img.src = new URL(img.getAttribute('src'), `${RAW}plugins/${name}/`).href })
-        doc.querySelectorAll('pre code').forEach(code => hljs.highlightElement(code))
+        $$('img[src]', doc).forEach(img => { img.src = new URL(img.getAttribute('src'), `${RAW}plugins/${name}/`).href })
+        $$('pre code', doc).forEach(code => hljs.highlightElement(code))
         return doc
+      }
+
+      // Updates: each commit under its plugin's name and what kind of change it is, by day.
+      const KINDS = { feat: 'new', fix: 'fix', perf: 'faster', docs: 'docs', test: 'tests', refactor: 'refactor', chore: 'chore' }
+      const inline = text => esc(text).replace(/`([^`]+)`/g, '<code>$1</code>')
+      // A commit's body as the page draws text: its lines rejoined, a list kept a list, its trailers left out.
+      function bodyHtml (body) {
+        return body.replace(/^(?:co-authored-by|signed-off-by):.*$/gim, '').trim().split(/\n\s*\n/).filter(Boolean).map(block => /^- /.test(block)
+          ? `<ul>${block.split(/\n(?=- )/).map(item => `<li>${inline(item.slice(2).replace(/\s*\n\s*/g, ' '))}</li>`).join('')}</ul>`
+          : `<p>${inline(block.replace(/\s*\n\s*/g, ' '))}</p>`
+        ).join('')
+      }
+      function changeHtml ({ sha, message }) {
+        const [subject, ...rest] = message.split('\n')
+        const [, kind = '', scope = '', said = subject] = /^(\w+)(?:\(([^)]*)\))?!?:\s*(.+)$/.exec(subject) ?? []
+        const plugin = titles[scope] ?? scope
+        const title = inline(said.charAt(0).toUpperCase() + said.slice(1)).replace(/#(\d+)/g, `<a href="https://github.com/${REPO}/issues/$1" target="_blank" rel="noopener">#$1</a>`)
+        return `<article class="change"><p class="change-head">${plugin ? `<span class="change-plugin">${esc(plugin)}</span>` : ''}${KINDS[kind] ? `<span class="change-kind">${KINDS[kind]}</span>` : ''}<a class="change-sha" href="https://github.com/${REPO}/commit/${sha}" target="_blank" rel="noopener">${sha.slice(0, 7)}</a></p><h3>${title}</h3>${bodyHtml(rest.join('\n'))}</article>`
+      }
+      function dayOf (date) {
+        const day = new Date(date).setHours(0, 0, 0, 0)
+        const today = new Date().setHours(0, 0, 0, 0)
+        const days = Math.round((day - today) / 86400000)
+        if (days > -2) return relative.format(days, 'day')
+        const sameYear = new Date(day).getFullYear() === new Date(today).getFullYear()
+        return new Date(day).toLocaleDateString('en', { month: 'long', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) })
+      }
+      function changesHtml (list) {
+        let html = ''
+        let last = ''
+        for (const change of list.filter(change => !change.isMerge)) {
+          const day = dayOf(change.date)
+          if (day !== last) html += `<h2 class="day">${esc(day)}</h2>`
+          last = day
+          html += changeHtml(change)
+        }
+        return `<div class="doc">${html}<p class="changes-more"><a href="${CHANGES}" target="_blank" rel="noopener">Every change, on GitHub</a></p></div>`
       }
 
       let reading = null
@@ -988,7 +1331,20 @@
         const current = () => token === drawing
         const { name, tab } = reading
         readerBody.classList.toggle('is-source', tab === 'source')
-        readerBody.setAttribute('aria-labelledby', `tab-${tab}`)
+        readerBody.setAttribute('aria-labelledby', tab === 'updates' ? 'reader-name' : `tab-${tab}`)
+        if (tab === 'updates') {
+          drawnFiles = ''
+          readerOut.href = CHANGES
+          readerBody.innerHTML = LOADING
+          try {
+            const list = await changesOf()
+            if (current()) readerBody.innerHTML = changesHtml(list)
+          } catch (error) {
+            if (current()) readerBody.innerHTML = failed(CHANGES)
+          }
+          if (current()) readerBody.scrollTop = 0
+          return
+        }
         if (tab === 'docs') {
           drawnFiles = ''
           const url = `${BLOB}plugins/${name}/README.md`
@@ -1019,11 +1375,11 @@
         history.replaceState({ reader: true }, '', `#${name}/source/${file}`)
         readerOut.href = `${BLOB}plugins/${name}/${file}`
         // The list keeps where it was scrolled while the same plugin's files change.
-        const listTop = drawnFiles === name ? readerBody.querySelector('.files')?.scrollTop ?? 0 : 0
+        const listTop = drawnFiles === name ? $('.files', readerBody)?.scrollTop ?? 0 : 0
         readerBody.innerHTML = `<div class="src"><nav class="files" aria-label="Files">${filesHtml(files, file)}</nav><div class="code" tabindex="0" aria-label="${esc(file)}">${LOADING}</div></div>`
-        readerBody.querySelector('.files').scrollTop = listTop
+        $('.files', readerBody).scrollTop = listTop
         drawnFiles = name
-        const code = readerBody.querySelector('.code')
+        const code = $('.code', readerBody)
         try {
           const text = await fetchText(`${RAW}plugins/${name}/${file}`)
           if (current()) code.innerHTML = codeHtml(text, file)
@@ -1032,13 +1388,18 @@
         }
       }
 
+      // A plugin's docs or source, or, by the name updates, the plugins' latest changes.
       function openReader (name, tab, file, { push = true } = {}) {
-        if (!titles[name]) return
+        const isUpdates = name === 'updates'
+        if (!titles[name] && !isUpdates) return
         const wasOpen = reading !== null
         if (reading?.name !== name) drawnFiles = ''
         reading = { name, tab, file }
-        readerName.textContent = titles[name]
-        readerPath.textContent = `plugins/${name}`
+        readerName.textContent = isUpdates ? 'Updates' : titles[name]
+        readerPath.textContent = isUpdates ? 'plugins/' : `plugins/${name}`
+        tablist.hidden = isUpdates
+        if (isUpdates) updated.setAttribute('aria-current', 'true')
+        else updated.removeAttribute('aria-current')
         tabs.forEach(t => {
           const isOn = t.dataset.tab === tab
           t.setAttribute('aria-selected', String(isOn))
@@ -1048,7 +1409,7 @@
           if (a.dataset.panel === tab && pluginOf(a) === name) a.setAttribute('aria-current', 'true')
           else a.removeAttribute('aria-current')
         })
-        const hash = `#${name}/${tab}${file ? `/${file}` : ''}`
+        const hash = isUpdates ? '#updates' : `#${name}/${tab}${file ? `/${file}` : ''}`
         if (!wasOpen && push) {
           history.pushState({ reader: true }, '', hash)
           pushed = true
@@ -1070,6 +1431,7 @@
         root.classList.remove('reading')
         reader.inert = true
         panelLinks.forEach(a => a.removeAttribute('aria-current'))
+        updated.removeAttribute('aria-current')
         opener?.focus({ preventScroll: true })
         opener = null
       }
@@ -1082,6 +1444,7 @@
       }
 
       function fromHash () {
+        if (location.hash === '#updates') return { name: 'updates', tab: 'updates' }
         const match = /^#([\w-]+)\/(docs|source)(?:\/(.+))?$/.exec(location.hash)
         return match && titles[match[1]] ? { name: match[1], tab: match[2], file: match[3] && decodeURIComponent(match[3]) } : null
       }
@@ -1108,6 +1471,12 @@
           openReader(name, a.dataset.panel, reading?.name === name ? reading.file : undefined)
         })
       })
+      updated.addEventListener('click', e => {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+        e.preventDefault()
+        opener = updated
+        openReader('updates', 'updates')
+      })
       tabs.forEach((t, i) => {
         t.addEventListener('click', () => { if (reading && reading.tab !== t.dataset.tab) openReader(reading.name, t.dataset.tab, reading.file) })
         t.addEventListener('keydown', e => {
@@ -1123,9 +1492,9 @@
         if (target.tagName === 'A' && (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)) return
         e.preventDefault()
         openReader(reading.name, 'source', target.dataset.file)
-        readerBody.querySelector('.code')?.focus({ preventScroll: true })
+        $('.code', readerBody)?.focus({ preventScroll: true })
       })
-      document.getElementById('reader-close').addEventListener('click', leaveReader)
+      $('#reader-close').addEventListener('click', leaveReader)
       addEventListener('keydown', e => { if (e.key === 'Escape' && reading) leaveReader() })
       const linked = fromHash()
       if (linked) openReader(linked.name, linked.tab, linked.file, { push: false })

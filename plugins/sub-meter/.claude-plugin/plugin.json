@@ -1,6 +1,6 @@
 {
   "name": "sub-meter",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Your subscription usage at the bottom right of Claude Code: the 5-hour and weekly windows, as a bar that takes turns.",
   "author": {
     "name": "Miguel Ángel Durán (midudev)",
@@ -23,6 +23,12 @@
       "type": "boolean",
       "title": "Hide the mode cycle hint",
       "description": "Drop \"(shift+tab to cycle)\" after the permission mode, to leave room for the meter.",
+      "default": true
+    },
+    "hideInterruptHint": {
+      "type": "boolean",
+      "title": "Hide the interrupt hint",
+      "description": "Drop \"esc to interrupt\" from the hint line while Claude works, to leave room for the meter.",
       "default": true
     }
   }

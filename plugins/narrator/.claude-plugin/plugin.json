@@ -1,6 +1,6 @@
 {
   "name": "narrator",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Click ⏸︎ narrator off in the footer, or /narrator, and after each turn Claude tells you out loud what it did, in your language, with the best free voice your system has: Siri's on macOS, Narrator's on Windows, speech-dispatcher's on Linux.",
   "author": {
     "name": "Miguel Ángel Durán (midudev)",
@@ -22,7 +22,7 @@
     "voice": {
       "type": "string",
       "title": "Voice",
-      "description": "A voice's name (Mónica, Microsoft Helena) to always speak with. Empty: the best voice installed for the language Claude speaks, or the English one where that language has none.",
+      "description": "A voice's name (Mónica, Microsoft Helena, or Eddy (es-MX) for one language's) to always speak with; /narrator voices lists them. Empty: the best voice installed for the language Claude speaks, or the English one where that language has none.",
       "default": ""
     },
     "language": {
@@ -31,11 +31,26 @@
       "description": "The language to always narrate in, as a language code (es, en, pt); an unknown one is ignored. Empty: the language you write in.",
       "default": ""
     },
+    "speed": {
+      "type": "number",
+      "title": "Speed",
+      "description": "How fast the voice speaks, as a multiple of its normal pace: 1 is the voice's own, 1.5 half as fast again.",
+      "default": 1.3,
+      "min": 0.5,
+      "max": 2
+    },
     "model": {
       "type": "string",
       "title": "Model that writes the narration",
       "description": "An alias (haiku) or a full model id.",
       "default": "haiku"
+    },
+    "shortAnswer": {
+      "type": "number",
+      "title": "Read short answers as they are",
+      "description": "An answer up to this many characters is read out as it is, with no model call to narrate it. 0: always narrate.",
+      "default": 200,
+      "min": 0
     }
   }
 }

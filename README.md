@@ -35,6 +35,8 @@ Plugins and mods for Claude Code by midudev, one per folder in [`plugins/`](plug
 /plugin install token-meter@better-claude
 -->
 
+To get new versions on their own, turn on auto-update: `/plugin` → **Marketplaces** → **better-claude** → **Enable auto-update**. Claude Code leaves it off for marketplaces outside Anthropic's.
+
 This repository is the marketplace: [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) lists each plugin folder as a source.
 
 ## Development

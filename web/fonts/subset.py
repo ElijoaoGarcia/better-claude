@@ -22,7 +22,7 @@ from fontTools.varLib import instancer
 WEB = Path(__file__).resolve().parent.parent
 FONTS = WEB / 'fonts'
 PAGE = WEB / 'index.html'
-TITLE = 'better-claude'
+TITLE = 'betterclaude'
 NOTE = 'try this!'
 
 
