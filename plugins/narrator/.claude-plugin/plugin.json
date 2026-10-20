@@ -30,6 +30,13 @@
       "title": "Model that writes the narration",
       "description": "An alias (haiku) or a full model id.",
       "default": "haiku"
+    },
+    "shortAnswer": {
+      "type": "number",
+      "title": "Read short answers as they are",
+      "description": "An answer up to this many characters is read out as it is, with no model call to narrate it. 0: always narrate.",
+      "default": 200,
+      "min": 0
     }
   }
 }

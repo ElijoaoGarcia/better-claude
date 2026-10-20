@@ -44,7 +44,12 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 In `/config`:
 
 - **Voice**: a voice's name (`Mónica`, `Microsoft Helena`) to always speak with. Empty: the best one for the language.
+- **Read short answers as they are**: an answer up to this many characters (200 by default) is read out as it is, with no Haiku call to retell it. `0`: always narrate.
 - **Model that writes the narration**: `haiku` by default.
+
+## Several windows
+
+Every window shares one line (a folder in your temp directory, on macOS and Linux). When two sessions finish together, their narrations are said one after the other, in the order they were ready. One that would wait behind three others, or for two minutes, is dropped. A window that closes never holds the line. Within a window, a new turn still cuts the narration before it.
 
 ## How it works
 

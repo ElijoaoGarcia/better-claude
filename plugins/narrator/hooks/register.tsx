@@ -1,12 +1,12 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderNode } from 'claude-code'
 
-import { LINUX, MACOS, WINDOWS, powershell } from './speaker'
+import { LINUX, MACOS, QUEUE, WINDOWS, powershell } from './speaker'
 import { cut, guessLanguage, parseNarration, plain } from './text'
 
 type Platform = 'macos' | 'windows' | 'linux' | 'other'
 /** A program that speaks, and what it is told through its environment. */
-type Command = { argv: string[]; env: Record<string, string> }
+type Command = { argv: string[]; env: Record<string, string>; program: string }
 /** One narration: the model call that writes it, then the program that speaks it, until silenced. */
 type Narration = { isActive: boolean; abort: AbortController }
 /** The synthesizer found on Linux and the languages it has voices for (empty: it did not say). */
@@ -35,7 +35,10 @@ Reply in exactly this form: the first line holds only the ISO 639-1 code of the 
 
 const enabled = atom({ plugin: 'narrator', key: 'isEnabled' } as const, false)
 
-let settings = { voice: '', model: 'haiku' }
+/** An answer this short is read out as it is: no model call to write a narration of it. */
+const SHORT_ANSWER = 200
+
+let settings = { voice: '', model: 'haiku', shortAnswer: SHORT_ANSWER }
 // The main loop's turn so far: the prompt that started it and each tool call it made.
 let request = ''
 let actions: string[] = []
@@ -107,25 +110,25 @@ function linuxSpeechOf ($: EngineInterface) {
 async function speakersFor ($: EngineInterface, text: string, language: string): Promise<Command[]> {
   const env = { NARRATOR_TEXT: text, NARRATOR_LANG: language, NARRATOR_VOICE: settings.voice }
   const system = await platformOf($)
-  if (system === 'macos') return [{ argv: ['osascript', '-l', 'JavaScript', '-e', MACOS], env }]
-  if (system === 'windows') return [{ argv: powershell(WINDOWS), env }]
+  if (system === 'macos') return [{ argv: ['osascript', '-l', 'JavaScript', '-e', MACOS], env, program: 'osascript' }]
+  if (system === 'windows') return [{ argv: powershell(WINDOWS), env, program: 'powershell' }]
   if (system !== 'linux') return []
 
   const speakers: Command[] = []
   if (await wslOf($)) {
     const inherited = await $.env.get('WSLENV')
     const crossing = [inherited, 'NARRATOR_TEXT/u', 'NARRATOR_LANG/u', 'NARRATOR_VOICE/u'].filter(Boolean).join(':')
-    speakers.push({ argv: powershell(WINDOWS, 'powershell.exe'), env: { ...env, WSLENV: crossing } })
+    speakers.push({ argv: powershell(WINDOWS, 'powershell.exe'), env: { ...env, WSLENV: crossing }, program: 'powershell.exe' })
   }
   const { tool, languages } = await linuxSpeechOf($)
   // A language the synthesizer has no voice for is read by its English voice.
   const lang = language && (languages.size === 0 || languages.has(language) ? language : 'en')
   if (tool === 'spd-say') {
     const options = [...(lang ? ['-l', lang] : []), ...(settings.voice ? ['-y', settings.voice] : [])]
-    speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', 'spd-say', '-w', ...options, '--', text], env: { ...env, NARRATOR_STOP: 'spd-say -S' } })
+    speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', 'spd-say', '-w', ...options, '--', text], env: { ...env, NARRATOR_STOP: 'spd-say -S' }, program: 'spd-say' })
   } else if (tool) {
     const voice = settings.voice || lang
-    speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', tool, ...(voice ? ['-v', voice] : []), '--', text], env })
+    speakers.push({ argv: ['sh', '-c', LINUX, 'narrator', tool, ...(voice ? ['-v', voice] : []), '--', text], env, program: tool })
   }
   return speakers
 }
@@ -143,20 +146,31 @@ async function play ($: EngineInterface, narration: Narration, command: Command)
     failure = message(error)
   }
   const voice = /^voice (.+?)\r?$/m.exec(said)?.[1]
-  failure ||= /^error.*$/m.exec(said)?.[0] ?? (voice ? '' : `${command.argv[0]} said nothing`)
+  // Behind others for too long: the line dropped it, and nothing else should say it now.
+  if (/^skipped\r?$/m.test(said)) {
+    $.ui.log('narrator: not said, the line of narrations from other sessions was too long', { to: 'debug' })
+    return true
+  }
+  failure ||= /^error.*$/m.exec(said)?.[0] ?? (voice ? '' : `${command.program} said nothing`)
   // Under WSL the Windows side outlives its end of the pipe: end it by its id.
   const pid = /^pid (\d+)/m.exec(said)?.[1]
-  if (!narration.isActive && pid && command.argv[0] === 'powershell.exe') {
+  if (!narration.isActive && pid && command.program === 'powershell.exe') {
     await $.process.run(['taskkill.exe', '/PID', pid, '/T', '/F']).catch(() => undefined)
   }
   if (!narration.isActive) return true
-  $.ui.log(failure ? `narrator: ${command.argv[0]}: ${failure}` : `narrator: spoke with ${voice}`, { to: 'debug' })
+  $.ui.log(failure ? `narrator: ${command.program}: ${failure}` : `narrator: spoke with ${voice}`, { to: 'debug' })
   return failure === ''
 }
 
 /** Says `text` with the best speaker that works here, the engine's own synthesizer last. */
 async function speak ($: EngineInterface, narration: Narration, text: string, language: string) {
-  for (const command of await speakersFor($, text, language)) {
+  const line = (await platformOf($)) !== 'windows'
+  const ticket = String(await $.clock.now()).padStart(13, '0')
+  for (const speaker of await speakersFor($, text, language)) {
+    // Every window shares one line, so two sessions that finish together are said one after the other.
+    const command: Command = line
+      ? { ...speaker, argv: ['sh', '-c', QUEUE, 'narrator-line', ...speaker.argv], env: { ...speaker.env, NARRATOR_TICKET: ticket } }
+      : speaker
     if (await play($, narration, command)) return
     if (!narration.isActive) return
   }
@@ -187,13 +201,17 @@ async function narrate ($: EngineInterface, answer: string) {
   const narration: Narration = { isActive: true, abort: new AbortController() }
   current = narration
   try {
-    const reply = await $.model.complete(
+    // A short answer already says it: read it out, with no model call to retell it.
+    const direct = plain(answer)
+    const isShort = settings.shortAnswer > 0 && direct !== '' && direct.length <= settings.shortAnswer
+    const reply = isShort ? undefined : await $.model.complete(
       // A short summary: no deep thinking, so it is said right after the turn.
       { model: settings.model, system: NARRATOR, prompt: brief(answer), maxTokens: 400, effort: 'low', timeoutMs: 30_000 },
       { signal: narration.abort.signal }
     ).catch(() => undefined)
     if (!narration.isActive) return
     const told = reply?.isAnswered ? parseNarration(reply.text) : undefined
+    if (isShort) return await speak($, narration, direct, guessLanguage(answer))
     // No narration written: the answer itself, as far as it reads aloud.
     const { text, language } = told?.text ? told : { text: cut(plain(answer), 600), language: guessLanguage(answer) }
     if (text) await speak($, narration, text, language)
@@ -223,7 +241,8 @@ function isBlank (node: RenderNode | undefined): boolean {
 export const register: Register = (on, options) => {
   settings = {
     voice: String(options.voice ?? '').trim(),
-    model: String(options.model || 'haiku')
+    model: String(options.model || 'haiku'),
+    shortAnswer: Number.isFinite(Number(options.shortAnswer)) && options.shortAnswer !== '' && options.shortAnswer != null ? Math.max(0, Number(options.shortAnswer)) : SHORT_ANSWER
   }
 
   on('session.start', async ($, e, next) => {

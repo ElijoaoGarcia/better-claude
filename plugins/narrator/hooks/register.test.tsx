@@ -101,11 +101,16 @@ function world (on: On, { system = 'Darwin', env = {}, reply = 'es\nHe añadido 
   return { clock, store: kept, spoken, said, prompts, efforts, toasts, nextSpeech, settled }
 }
 
+/** An answer too long to be read as it is: the narrator has a model write what to say. */
+const LONG = `Added the **narrator** in \`plugins/narrator\`. ${'It speaks after every turn, in your language, with the best voice the system has. '.repeat(3)}`
+/** What follows the line every speaker waits in (sh -c <queue> narrator-line). */
+const behindLine = (run: Spoken) => run.argv.slice(4)
+
 const footer = ($: Engine, modes: string[] = []) =>
   $.ui.mount({ plugin: 'narrator', surface: 'terminal', component: 'SessionMode', props: { modes } })
 const startSession = ($: Engine) => $.session.start({ cwd: '/project', surface: 'terminal', isInteractive: true })
 const narrator = ($: Engine, args = '') => $.command.run({ command: 'narrator', args, origin: { kind: 'composer' }, presentation: { isFullscreen: false, columns: 100 } })
-const turn = async ($: Engine, { prompt = 'add a narrator', answer = 'Added the **narrator** in `plugins/narrator`.', agentId, reason = 'answer' as const }: { prompt?: string; answer?: string; agentId?: string; reason?: 'answer' | 'aborted' } = {}) => {
+const turn = async ($: Engine, { prompt = 'add a narrator', answer = LONG, agentId, reason = 'answer' as const }: { prompt?: string; answer?: string; agentId?: string; reason?: 'answer' | 'aborted' } = {}) => {
   await $.turn.start({ text: prompt, turnId: 't1', agentId })
   await $.tool.call({ tool: 'Write', file_path: '/project/plugins/narrator/hooks/register.ts', content: 'x', agentId } as never)
   await $.tool.call({ tool: 'Bash', command: 'claude plugin test .', description: 'Run the mod tests', agentId } as never)
@@ -178,8 +183,8 @@ test('after a turn, Haiku writes what Claude did and macOS says it in the langua
   expect(w.prompts[0]).toContain('- Bash: Run the mod tests')
   expect(w.prompts[0]).toContain('Added the **narrator**')
   expect(w.spoken).toHaveLength(1)
-  expect(w.spoken[0]!.argv.slice(0, 3)).toEqual(['osascript', '-l', 'JavaScript'])
-  expect(w.spoken[0]!.env).toEqual({ NARRATOR_TEXT: 'He añadido el narrador y los tests pasan.', NARRATOR_LANG: 'es', NARRATOR_VOICE: '' })
+  expect(behindLine(w.spoken[0]!).slice(0, 3)).toEqual(['osascript', '-l', 'JavaScript'])
+  expect(w.spoken[0]!.env).toEqual({ NARRATOR_TEXT: 'He añadido el narrador y los tests pasan.', NARRATOR_LANG: 'es', NARRATOR_VOICE: '', NARRATOR_TICKET: '0000000000000' })
 })
 
 test('the voice setting reaches the speaker', { options: { voice: 'Mónica' } }, async ($, on) => {
@@ -197,7 +202,7 @@ test("a subagent's turn and an interrupted turn are not narrated", async ($, on)
   await turn($, { agentId: 'agent-1', answer: 'subagent report' })
   await turn($, { reason: 'aborted', answer: 'half done' })
   const speech = w.nextSpeech()
-  await turn($, { answer: 'all done' })
+  await turn($, { answer: `all done. ${LONG}` })
   await speech
   expect(w.prompts).toHaveLength(1)
   expect(w.prompts[0]).toContain('all done')
@@ -254,7 +259,7 @@ test("WSL speaks with Windows' voices, its variables crossing over", async ($, o
   const speech = w.nextSpeech()
   await turn($)
   await speech
-  expect(w.spoken[0]!.argv[0]).toBe('powershell.exe')
+  expect(behindLine(w.spoken[0]!)[0]).toBe('powershell.exe')
   expect(w.spoken[0]!.env.WSLENV).toBe('NARRATOR_TEXT/u:NARRATOR_LANG/u:NARRATOR_VOICE/u')
 })
 
@@ -265,7 +270,7 @@ test('Linux speaks with speech-dispatcher in the language Haiku names', async ($
   await turn($)
   await speech
   expect(w.spoken[0]!.argv.slice(0, 2)).toEqual(['sh', '-c'])
-  expect(w.spoken[0]!.argv.slice(3)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '--', 'He añadido el narrador y los tests pasan.'])
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '--', 'He añadido el narrador y los tests pasan.'])
   expect(w.spoken[0]!.env.NARRATOR_STOP).toBe('spd-say -S')
 })
 
@@ -275,7 +280,7 @@ test('a language the synthesizer has no voice for is read in English', async ($,
   const speech = w.nextSpeech()
   await turn($)
   await speech
-  expect(w.spoken[0]!.argv.slice(3)).toEqual(['narrator', 'espeak-ng', '-v', 'en', '--', 'He añadido el narrador y los tests pasan.'])
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'espeak-ng', '-v', 'en', '--', 'He añadido el narrador y los tests pasan.'])
 })
 
 test('where no speaker works, the engine speaks; where it cannot either, a toast says what to install', async ($, on) => {
@@ -307,4 +312,34 @@ test('the narration is read as plain text, in the language it names', () => {
   expect(parseNarration('He arreglado los tests y ahora todo pasa en la rama principal.').language).toBe('es')
   expect(plain('## Done\n- one\n- two [link](https://x.dev)\n```ts\ncode\n```\nend')).toBe('Done one two link end')
   expect(guessLanguage('ok')).toBe('')
+})
+
+test('a short answer is read as it is, with no model call', async ($, on) => {
+  const w = world(on, { store: { enabled: true } })
+  await startSession($)
+  const speech = w.nextSpeech()
+  await turn($, { answer: 'Hecho: los tests pasan y el **narrador** habla.' })
+  await speech
+  expect(w.prompts).toHaveLength(0)
+  expect(w.spoken[0]!.env.NARRATOR_TEXT).toBe('Hecho: los tests pasan y el narrador habla.')
+})
+
+test('shortAnswer 0 narrates every answer', { options: { shortAnswer: 0 } }, async ($, on) => {
+  const w = world(on, { store: { enabled: true } })
+  await startSession($)
+  const speech = w.nextSpeech()
+  await turn($, { answer: 'all done' })
+  await speech
+  expect(w.prompts).toHaveLength(1)
+})
+
+test('every speaker waits in the line shared by all windows, except on Windows', async ($, on) => {
+  const w = world(on, { store: { enabled: true } })
+  await startSession($)
+  const speech = w.nextSpeech()
+  await turn($)
+  await speech
+  expect(w.spoken[0]!.argv.slice(0, 2)).toEqual(['sh', '-c'])
+  expect(w.spoken[0]!.argv[3]).toBe('narrator-line')
+  expect(w.spoken[0]!.env.NARRATOR_TICKET).toMatch(/^\d{13}$/)
 })
