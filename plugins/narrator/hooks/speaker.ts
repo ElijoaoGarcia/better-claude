@@ -197,29 +197,33 @@ export const powershell = (script: string, program = 'powershell') => [program, 
  * The line every speaker waits in, on macOS and Linux, shared by every window. Each narration
  * takes a ticket (NARRATOR_TICKET, the time it was ready, then its own process id) in a folder
  * all the sessions see, and speaks once its is the oldest of the live ones: a ticket whose
- * process is gone is thrown away, so a window that was closed never holds the line. The speaker
+ * process is gone, or that is older than a quarter of an hour (its process id may have been reused), is thrown away, so a window that was closed never holds the line. The folder is the user's own, so nobody else's tickets get in the way. The speaker
  * replaces this shell (`exec`), so the ticket lives exactly as long as the speech. A narration
  * that would wait behind three others, or for two minutes, is not said: it prints `skipped`.
  */
 export const QUEUE = String.raw`
 base=$TMPDIR
 [ -n "$base" ] || base=/tmp
-dir="$base/claude-narrator-queue"
+dir="$base/claude-narrator-queue-$(id -u)"
 mkdir -p "$dir" 2>/dev/null || exec "$@"
 mine="$dir/$NARRATOR_TICKET-$$"
-: > "$mine"
+: > "$mine" 2>/dev/null || exec "$@"
+now=$(date +%s)
 tries=0
 while :; do
   ahead=0
   for f in "$dir"/*; do
     [ -e "$f" ] || continue
     owner=$(echo "$f" | sed 's/.*-//')
-    if ! kill -0 "$owner" 2>/dev/null; then rm -f "$f"; continue; fi
+    born=$(echo "$f" | sed 's|.*/||; s/-.*//')
+    # Gone: its process has ended, or it is older than any speech lasts (a reused process id).
+    if ! kill -0 "$owner" 2>/dev/null || [ $((now - born / 1000)) -gt 900 ]; then rm -f "$f"; continue; fi
     [ "$f" = "$mine" ] && break
     ahead=$((ahead + 1))
   done
   [ "$ahead" -eq 0 ] && exec "$@"
   tries=$((tries + 1))
+  now=$(date +%s)
   if [ "$ahead" -ge 3 ] || [ "$tries" -gt 400 ]; then
     rm -f "$mine"
     echo skipped
