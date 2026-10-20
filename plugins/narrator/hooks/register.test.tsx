@@ -225,7 +225,7 @@ test('/narrator test previews a named voice without changing narrator settings',
     NARRATOR_TEXT: 'Hello! This is a voice preview for Narrator.',
     NARRATOR_LANG: 'en',
     NARRATOR_VOICE: 'Mónica',
-    NARRATOR_SPEED: '1.2',
+    NARRATOR_SPEED: '1.3',
     NARRATOR_TICKET: '0000000000000'
   })
   await narrator($, 'test')
@@ -386,7 +386,7 @@ test('after a turn, Haiku writes what Claude did and macOS says it in the langua
   expect(w.prompts[0]).toContain('Added the **narrator**')
   expect(w.spoken).toHaveLength(1)
   expect(behindLine(w.spoken[0]!).slice(0, 3)).toEqual(['osascript', '-l', 'JavaScript'])
-  expect(w.spoken[0]!.env).toEqual({ NARRATOR_TEXT: 'He añadido el narrador y los tests pasan.', NARRATOR_LANG: 'es', NARRATOR_VOICE: '', NARRATOR_SPEED: '1.2', NARRATOR_TICKET: '0000000000000' })
+  expect(w.spoken[0]!.env).toEqual({ NARRATOR_TEXT: 'He añadido el narrador y los tests pasan.', NARRATOR_LANG: 'es', NARRATOR_VOICE: '', NARRATOR_SPEED: '1.3', NARRATOR_TICKET: '0000000000000' })
 })
 
 test('the voice setting reaches the speaker', { options: { voice: 'Mónica' } }, async ($, on) => {
@@ -483,7 +483,7 @@ test('Linux speaks with speech-dispatcher in the language Haiku names', async ($
   await turn($)
   await speech
   expect(w.spoken[0]!.argv.slice(0, 2)).toEqual(['sh', '-c'])
-  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '-r', '12', '--', 'He añadido el narrador y los tests pasan.'])
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'spd-say', '-w', '-l', 'es', '-r', '18', '--', 'He añadido el narrador y los tests pasan.'])
   expect(w.spoken[0]!.env.NARRATOR_STOP).toBe('spd-say -S')
 })
 
@@ -502,7 +502,7 @@ test('a language the synthesizer has no voice for is read in English', async ($,
   const speech = w.nextSpeech()
   await turn($)
   await speech
-  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'espeak-ng', '-v', 'en', '-s', '210', '--', 'He añadido el narrador y los tests pasan.'])
+  expect(w.spoken[0]!.argv.slice(7)).toEqual(['narrator', 'espeak-ng', '-v', 'en', '-s', '228', '--', 'He añadido el narrador y los tests pasan.'])
 })
 
 test('where no speaker works, the engine speaks; where it cannot either, a toast says what to install', async ($, on) => {

@@ -11,7 +11,7 @@ The switch reads like the footer's mode labels (`⏵⏵ auto mode on`), in quiet
 
 Where the footer is short the switch gives up `on` or `off`, then `narrator`, and stays a `⏵` or a `⏸︎` in its color, so the row never breaks in two. Beside [Sub Meter](../sub-meter), the meter shrinks first.
 
-When a turn ends, Haiku (at low effort, so it is quick) reads your request, the tools Claude used and its final message, and writes a few spoken sentences in first person ("I added the narrator and the tests pass"), in the language you wrote in. Haiku also names that language, and the mod picks the best voice installed for it; where there is none, the English one. A short answer already says it, so it is read out as it is, with no Haiku call: a path by its file's name (`hooks/register.tsx`: "register") and no commit hashes, in the language its words or your request tell, else the one the last narration was in (on Windows and Linux, Haiku narrates it while neither tells; macOS tells the language from the text).
+When a turn ends, Haiku (at low effort, so it is quick) reads your request, the tools Claude used and its final message, and writes one or two short spoken sentences in first person ("I added the narrator and the tests pass"), in the language you wrote in. Haiku also names that language, and the mod picks the best voice installed for it; where there is none, the English one. A short answer already says it, so it is read out as it is, with no Haiku call: a path by its file's name (`hooks/register.tsx`: "register") and no commit hashes, in the language its words or your request tell, else the one the last narration was in (on Windows and Linux, Haiku narrates it while neither tells; macOS tells the language from the text).
 
 | System | Voice |
 | --- | --- |
@@ -52,7 +52,7 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 In `/config`:
 
 - **Voice**: a voice's name (`Mónica`, `Microsoft Helena`, or `Eddy (es-MX)` for one language's) to always speak with. Empty: the best one for the language. `/narrator voices` lists them and `/narrator test` tries one.
-- **Speed**: how fast it speaks, as a multiple of the voice's normal pace, from `0.5` to `2`: `1.2` by default, a little quicker; `1` is the voice's own. The engine's voice, the last resort, keeps its own pace.
+- **Speed**: how fast it speaks, as a multiple of the voice's normal pace, from `0.5` to `2`: `1.3` by default, a little quicker; `1` is the voice's own. The engine's voice, the last resort, keeps its own pace.
 - **Read short answers as they are**: an answer up to this many characters (200 by default) is read out as it is, with no Haiku call to retell it. `0`: Haiku narrates every answer.
 - **Model that writes the narration**: `haiku` by default.
 

@@ -29,7 +29,7 @@
       "type": "number",
       "title": "Speed",
       "description": "How fast the voice speaks, as a multiple of its normal pace: 1 is the voice's own, 1.5 half as fast again.",
-      "default": 1.2,
+      "default": 1.3,
       "min": 0.5,
       "max": 2
     },

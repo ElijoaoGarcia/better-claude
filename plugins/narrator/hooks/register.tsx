@@ -29,7 +29,7 @@ const SEPARATOR = ' · '
 // before it: Sub Meter's shortest meter (`week 100%`) and its separator.
 const AROUND = 9 + SEPARATOR.length
 // A little quicker than the voice's normal pace, unless the settings say otherwise.
-const SPEED = 1.2
+const SPEED = 1.3
 const MAX_ACTIONS = 40
 const PREVIEW = 'Hello! This is a voice preview for Narrator.'
 // The tool inputs that say best what a call did, in order of preference.
@@ -37,13 +37,13 @@ const DETAILS = ['description', 'file_path', 'notebook_path', 'path', 'pattern',
 const LANGUAGE_CODE = /^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/i
 const NARRATOR = `You are the voice of Claude Code, a coding assistant. After each of its turns you tell the user, out loud, what Claude just did, speaking as Claude in the first person.
 
-You get the user's request, the actions Claude took and Claude's final message. Say what a colleague would say to explain it: what was done, how it turned out, and anything the user has to do or decide now. If Claude only answered a question, give the gist of the answer.
+You get the user's request, the actions Claude took and Claude's final message. Say what a colleague would say in passing: what was done and how it turned out, plus anything the user has to do or decide now. Leave out how it was done. If Claude only answered a question, give the gist of the answer.
 
 Speak the language the user wrote the request in; if that is unclear, the language of Claude's final message.
 
 Rules:
 - A speech synthesizer reads it aloud: plain sentences only. No markdown, lists, emojis or code, and no file paths, URLs, hashes or version strings read out character by character: name files and commands the way a person says them ("the register file", "the tests").
-- One sentence for a small answer, up to five for a large change; never more than 90 words.
+- Short: one sentence, two only for a large change; never more than 30 words.
 - No preamble ("Sure", "In summary"), no questions back, nothing Claude did not say or do.
 
 Reply in exactly this form: the first line holds only the ISO 639-1 code of the language you speak (es, en, pt, fr...), and the narration starts on the second line.`
@@ -338,13 +338,13 @@ async function narrate ($: EngineInterface, answer: string) {
     }
     const reply = await $.model.complete(
       // A short summary: no deep thinking, so it is said right after the turn.
-      { model: settings.model, system: NARRATOR, prompt: brief(answer), maxTokens: 400, effort: 'low', timeoutMs: 30_000 },
+      { model: settings.model, system: NARRATOR, prompt: brief(answer), maxTokens: 150, effort: 'low', timeoutMs: 30_000 },
       { signal: narration.abort.signal }
     ).catch(() => undefined)
     if (!narration.isActive) return
     const told = reply?.isAnswered ? parseNarration(reply.text) : undefined
     // No narration written: the answer itself, as far as it reads aloud.
-    const { text, language } = told?.text ? told : { text: cut(direct, 600), language: directLanguage }
+    const { text, language } = told?.text ? told : { text: cut(direct, 250), language: directLanguage }
     if (language) spokenLanguage = language
     if (text) await speak($, narration, text, language)
   } catch (error) {
