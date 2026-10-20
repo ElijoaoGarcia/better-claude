@@ -20,11 +20,19 @@ const MAX_ACTIONS = 40
 // The tool inputs that say best what a call did, in order of preference.
 const DETAILS = ['description', 'file_path', 'notebook_path', 'path', 'pattern', 'url', 'query', 'skill', 'command', 'prompt']
 const LANGUAGE_CODE = /^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/i
-const NARRATOR = `You are the voice of Claude Code, a coding assistant. After each of its turns you tell the user, out loud, what Claude just did, speaking as Claude in the first person.
+/** The language the narrator is told to speak: the one set, else the one the user wrote in. */
+function spoken (language: string) {
+  if (!language) return "Speak the language the user wrote the request in; if that is unclear, the language of Claude's final message."
+  let name = language
+  try { name = new Intl.DisplayNames(['en'], { type: 'language' }).of(language) ?? language } catch {}
+  return `Always speak ${name} (${language}), whatever language the request or Claude's final message is in.`
+}
+
+const NARRATOR = (language: string) => `You are the voice of Claude Code, a coding assistant. After each of its turns you tell the user, out loud, what Claude just did, speaking as Claude in the first person.
 
 You get the user's request, the actions Claude took and Claude's final message. Say what a colleague would say to explain it: what was done, how it turned out, and anything the user has to do or decide now. If Claude only answered a question, give the gist of the answer.
 
-Speak the language the user wrote the request in; if that is unclear, the language of Claude's final message.
+${spoken(language)}
 
 Rules:
 - A speech synthesizer reads it aloud: plain sentences only. No markdown, lists, emojis or code, and no file paths, URLs, hashes or version strings read out character by character: name files and commands the way a person says them ("the register file", "the tests").
@@ -35,7 +43,7 @@ Reply in exactly this form: the first line holds only the ISO 639-1 code of the 
 
 const enabled = atom({ plugin: 'narrator', key: 'isEnabled' } as const, false)
 
-let settings = { voice: '', model: 'haiku' }
+let settings = { voice: '', model: 'haiku', language: '' }
 // The main loop's turn so far: the prompt that started it and each tool call it made.
 let request = ''
 let actions: string[] = []
@@ -44,6 +52,12 @@ let platform: Promise<Platform> | undefined
 let wsl: Promise<boolean> | undefined
 let linuxSpeech: Promise<LinuxSpeech> | undefined
 let hasWarned = false
+
+/** A language setting as its ISO 639-1 code (`es-MX` is `es`); empty, or not a code: automatic. */
+export function languageOf (value: unknown) {
+  const code = String(value ?? '').trim()
+  return LANGUAGE_CODE.test(code) ? code.split(/[-_]/)[0]!.toLowerCase() : ''
+}
 
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error))
 
@@ -189,14 +203,14 @@ async function narrate ($: EngineInterface, answer: string) {
   try {
     const reply = await $.model.complete(
       // A short summary: no deep thinking, so it is said right after the turn.
-      { model: settings.model, system: NARRATOR, prompt: brief(answer), maxTokens: 400, effort: 'low', timeoutMs: 30_000 },
+      { model: settings.model, system: NARRATOR(settings.language), prompt: brief(answer), maxTokens: 400, effort: 'low', timeoutMs: 30_000 },
       { signal: narration.abort.signal }
     ).catch(() => undefined)
     if (!narration.isActive) return
     const told = reply?.isAnswered ? parseNarration(reply.text) : undefined
     // No narration written: the answer itself, as far as it reads aloud.
     const { text, language } = told?.text ? told : { text: cut(plain(answer), 600), language: guessLanguage(answer) }
-    if (text) await speak($, narration, text, language)
+    if (text) await speak($, narration, text, settings.language || language)
   } catch (error) {
     $.ui.log(`narrator: ${message(error)}`, { to: 'debug' })
   } finally {
@@ -223,7 +237,8 @@ function isBlank (node: RenderNode | undefined): boolean {
 export const register: Register = (on, options) => {
   settings = {
     voice: String(options.voice ?? '').trim(),
-    model: String(options.model || 'haiku')
+    model: String(options.model || 'haiku'),
+    language: languageOf(options.language)
   }
 
   on('session.start', async ($, e, next) => {
@@ -289,7 +304,9 @@ export const register: Register = (on, options) => {
     const beneath = await next(e)
     const hasBeneath = e.props.modes.length > 0 || !isBlank(beneath)
     const { Box, Button, Text } = $.ui.resolve(e)
-    const { label, color } = isEnabled ? SWITCH_ON : SWITCH_OFF
+    const { label: switchLabel, color } = isEnabled ? SWITCH_ON : SWITCH_OFF
+    // A language that is set shows beside the switch (ES, EN); automatic shows nothing.
+    const label = settings.language ? `${switchLabel} \u00B7 ${settings.language.toUpperCase()}` : switchLabel
 
     return (
       <Box flexDirection="row">

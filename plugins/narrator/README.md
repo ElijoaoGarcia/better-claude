@@ -9,7 +9,7 @@ A Claude Code mod: click `⏸︎ narrator off` at the bottom right of the prompt
 
 The switch reads like the footer's mode labels (`⏵⏵ auto mode on`), in quiet colors: `⏵ narrator on` in green, `⏸︎ narrator off` in gray. A click switches it (in fullscreen, where the terminal reports clicks); `/narrator` does it anywhere.
 
-When a turn ends, Haiku (at low effort, so it is quick) reads your request, the tools Claude used and its final message, and writes a few spoken sentences in first person ("I added the narrator and the tests pass"), in the language you wrote in. Haiku also names that language, and the mod picks the best voice installed for it; where there is none, the English one.
+When a turn ends, Haiku (at low effort, so it is quick) reads your request, the tools Claude used and its final message, and writes a few spoken sentences in first person ("I added the narrator and the tests pass"), in the language you wrote in, or the one you set (see Settings). Haiku also names that language, and the mod picks the best voice installed for it; where there is none, the English one.
 
 | System | Voice |
 | --- | --- |
@@ -44,6 +44,7 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 In `/config`:
 
 - **Voice**: a voice's name (`Mónica`, `Microsoft Helena`) to always speak with. Empty: the best one for the language.
+- **Language**: an ISO 639-1 code (`es`, `en`, `pt`) to always narrate in, whatever language you write in. The footer then shows it beside the switch (`⏵ narrator on · ES`). Empty: the language you write in, and the footer shows none.
 - **Model that writes the narration**: `haiku` by default.
 
 ## How it works

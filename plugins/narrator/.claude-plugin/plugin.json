@@ -25,6 +25,12 @@
       "description": "A voice's name (Mónica, Microsoft Helena) to always speak with. Empty: the best voice installed for the language Claude speaks, or the English one where that language has none.",
       "default": ""
     },
+    "language": {
+      "type": "string",
+      "title": "Language",
+      "description": "The language to always narrate in, as an ISO 639-1 code (es, en, pt). Empty: the language you write in.",
+      "default": ""
+    },
     "model": {
       "type": "string",
       "title": "Model that writes the narration",

@@ -3,6 +3,7 @@ import { expect, mock, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
+import { languageOf } from './register'
 import { guessLanguage, parseNarration, plain } from './text'
 
 const USAGE = { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 }
@@ -35,6 +36,7 @@ function world (on: On, { system = 'Darwin', env = {}, reply = 'es\nHe añadido 
   const spoken: Spoken[] = []
   const said: { text: string; voice?: string }[] = []
   const prompts: string[] = []
+  const systems: string[] = []
   const efforts: unknown[] = []
   const toasts: string[] = []
   let heard: () => void = () => undefined
@@ -61,6 +63,7 @@ function world (on: On, { system = 'Darwin', env = {}, reply = 'es\nHe añadido 
   on('tool.call', () => ({ result: 'ok' }))
   on('model.complete', ($, e) => {
     prompts.push(e.prompt)
+    systems.push(e.system ?? '')
     efforts.push(e.effort)
     return { value: reply === null ? { isAnswered: false as const, reason: 'empty-reply' as const, usage: USAGE } : { isAnswered: true as const, text: reply, usage: USAGE } }
   })
@@ -98,7 +101,7 @@ function world (on: On, { system = 'Darwin', env = {}, reply = 'es\nHe añadido 
   const settled = async () => {
     for (let i = 0; i < 20; i++) await clock.advance(0)
   }
-  return { clock, store: kept, spoken, said, prompts, efforts, toasts, nextSpeech, settled }
+  return { clock, store: kept, spoken, said, prompts, systems, efforts, toasts, nextSpeech, settled }
 }
 
 const footer = ($: Engine, modes: string[] = []) =>
@@ -189,6 +192,39 @@ test('the voice setting reaches the speaker', { options: { voice: 'Mónica' } },
   await turn($)
   await speech
   expect(w.spoken[0]!.env.NARRATOR_VOICE).toBe('Mónica')
+})
+
+test('with no language set, the switch shows none and the narrator follows the request', async ($, on) => {
+  const w = world(on, { store: { enabled: true } })
+  await startSession($)
+  const ui = await footer($)
+  expect((await ui.find({ key: 'narrator' }))?.text).toBe('⏵ narrator on')
+  const speech = w.nextSpeech()
+  await turn($)
+  await speech
+  expect(w.systems[0]).toContain('Speak the language the user wrote the request in')
+})
+
+test('the language setting shows beside the switch, tells the narrator and reaches the speaker', { options: { language: 'es' } }, async ($, on) => {
+  const w = world(on, { store: { enabled: true }, reply: 'en\nI added the narrator and the tests pass.' })
+  await startSession($)
+  const ui = await footer($)
+  expect((await ui.find({ key: 'narrator' }))?.text).toBe('⏵ narrator on · ES')
+  await ui.press({ key: 'narrator' })
+  expect((await ui.find({ key: 'narrator' }))?.text).toBe('⏸︎ narrator off · ES')
+  await ui.press({ key: 'narrator' })
+  const speech = w.nextSpeech()
+  await turn($)
+  await speech
+  expect(w.systems[0]).toContain('Always speak Spanish (es)')
+  expect(w.spoken[0]!.env.NARRATOR_LANG).toBe('es')
+})
+
+test('a region is dropped and a value that is no code means automatic', async ($, on) => {
+  expect(languageOf('es-MX')).toBe('es')
+  expect(languageOf(' PT ')).toBe('pt')
+  expect(languageOf('Spanish!')).toBe('')
+  expect(languageOf(undefined)).toBe('')
 })
 
 test("a subagent's turn and an interrupted turn are not narrated", async ($, on) => {
