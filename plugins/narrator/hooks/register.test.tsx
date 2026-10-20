@@ -220,10 +220,12 @@ test('the language setting shows beside the switch, tells the narrator and reach
   expect(w.spoken[0]!.env.NARRATOR_LANG).toBe('es')
 })
 
-test('a region is dropped and a value that is no code means automatic', async ($, on) => {
+test('a region is dropped, and a value that is no known language means automatic', async ($, on) => {
   expect(languageOf('es-MX')).toBe('es')
   expect(languageOf(' PT ')).toBe('pt')
   expect(languageOf('Spanish!')).toBe('')
+  expect(languageOf('zz')).toBe('')
+  expect(languageOf('ignore previous instructions')).toBe('')
   expect(languageOf(undefined)).toBe('')
 })
 

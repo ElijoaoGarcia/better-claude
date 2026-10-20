@@ -20,12 +20,19 @@ const MAX_ACTIONS = 40
 // The tool inputs that say best what a call did, in order of preference.
 const DETAILS = ['description', 'file_path', 'notebook_path', 'path', 'pattern', 'url', 'query', 'skill', 'command', 'prompt']
 const LANGUAGE_CODE = /^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/i
+/** The English name of a language code, or undefined where the runtime's language data does not know it. */
+function languageName (code: string) {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'language', fallback: 'none' }).of(code)
+  } catch {
+    return undefined
+  }
+}
+
 /** The language the narrator is told to speak: the one set, else the one the user wrote in. */
 function spoken (language: string) {
   if (!language) return "Speak the language the user wrote the request in; if that is unclear, the language of Claude's final message."
-  let name = language
-  try { name = new Intl.DisplayNames(['en'], { type: 'language' }).of(language) ?? language } catch {}
-  return `Always speak ${name} (${language}), whatever language the request or Claude's final message is in.`
+  return `Always speak ${languageName(language) ?? language} (${language}), whatever language the request or Claude's final message is in.`
 }
 
 const NARRATOR = (language: string) => `You are the voice of Claude Code, a coding assistant. After each of its turns you tell the user, out loud, what Claude just did, speaking as Claude in the first person.
@@ -53,10 +60,14 @@ let wsl: Promise<boolean> | undefined
 let linuxSpeech: Promise<LinuxSpeech> | undefined
 let hasWarned = false
 
-/** A language setting as its ISO 639-1 code (`es-MX` is `es`); empty, or not a code: automatic. */
+/**
+ * A language setting as its ISO 639 code (`es-MX` is `es`), checked against the language data the
+ * runtime ships (`Intl.DisplayNames`), so a typo or any other text is not a language: empty, automatic.
+ */
 export function languageOf (value: unknown) {
   const code = String(value ?? '').trim()
-  return LANGUAGE_CODE.test(code) ? code.split(/[-_]/)[0]!.toLowerCase() : ''
+  const language = LANGUAGE_CODE.test(code) ? code.split(/[-_]/)[0]!.toLowerCase() : ''
+  return language && languageName(language) ? language : ''
 }
 
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error))
@@ -242,6 +253,8 @@ export const register: Register = (on, options) => {
   }
 
   on('session.start', async ($, e, next) => {
+    const asked = String(options.language ?? '').trim()
+    if (asked && !settings.language) $.ui.log(`narrator: "${cut(asked, 40)}" is not a language code (es, en, pt...): speaking the language you write in`, { to: 'debug' })
     await $.command.register({
       name: 'narrator',
       description: 'Claude tells you out loud what it did after each turn · no argument: switch on or off',

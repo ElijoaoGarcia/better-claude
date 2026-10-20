@@ -28,7 +28,7 @@
     "language": {
       "type": "string",
       "title": "Language",
-      "description": "The language to always narrate in, as an ISO 639-1 code (es, en, pt). Empty: the language you write in.",
+      "description": "The language to always narrate in, as a language code (es, en, pt); an unknown one is ignored. Empty: the language you write in.",
       "default": ""
     },
     "model": {

@@ -44,7 +44,7 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 In `/config`:
 
 - **Voice**: a voice's name (`Mónica`, `Microsoft Helena`) to always speak with. Empty: the best one for the language.
-- **Language**: an ISO 639-1 code (`es`, `en`, `pt`) to always narrate in, whatever language you write in. The footer then shows it beside the switch (`⏵ narrator on · ES`). Empty: the language you write in, and the footer shows none.
+- **Language**: a language code (`es`, `en`, `pt`) to always narrate in, whatever language you write in. It is checked against the runtime's language list: an unknown value (`zz`, a typo, any other text) is ignored, and the narrator goes back to automatic. The footer then shows it beside the switch (`⏵ narrator on · ES`). Empty: the language you write in, and the footer shows none.
 - **Model that writes the narration**: `haiku` by default.
 
 ## How it works
