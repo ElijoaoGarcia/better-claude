@@ -9,6 +9,8 @@ A Claude Code mod: click `⏸︎ narrator off` at the bottom right of the prompt
 
 The switch reads like the footer's mode labels (`⏵⏵ auto mode on`), in quiet colors: `⏵ narrator on` in green, `⏸︎ narrator off` in gray. A click switches it (in fullscreen, where the terminal reports clicks); `/narrator` does it anywhere.
 
+Where the footer is short the switch gives up `on` or `off`, then `narrator`, and stays a `⏵` or a `⏸︎` in its color, so the row never breaks in two. Beside [Sub Meter](../sub-meter), the meter shrinks first.
+
 When a turn ends, Haiku (at low effort, so it is quick) reads your request, the tools Claude used and its final message, and writes a few spoken sentences in first person ("I added the narrator and the tests pass"), in the language you wrote in. Haiku also names that language, and the mod picks the best voice installed for it; where there is none, the English one. A short answer already says it, so it is read out as it is, with no Haiku call: a path by its file's name (`hooks/register.tsx`: "register") and no commit hashes, in the language its words or your request tell, else the one the last narration was in (on Windows and Linux, Haiku narrates it while neither tells; macOS tells the language from the text).
 
 | System | Voice |
@@ -24,7 +26,13 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 /narrator         switch on or off
 /narrator on|off
 /narrator stop    quiet now, stay on
+/narrator voices  list the installed voices, by language
+/narrator test [voice]  say a short sample with a voice
 ```
+
+`/narrator voices` lists the voices your system has, one line per language (`es-ES: Eddy, Mónica`); on macOS it leaves out the novelty ones (Bahh, Bells...). On Linux it shows speech-dispatcher's table, whose NAME column holds the voices of its output module, and eSpeak's.
+
+`/narrator test` says a short English sample with the voice in `/config` (or, if it is empty, the one the system picks), and tells you which voice spoke. Pass a voice to try it without changing `/config`: `/narrator test Microsoft Helena`. A name several languages share (Eddy) can take its language, as `/narrator voices` shows it: `/narrator test Eddy (es-MX)`. If the system has no voice by that name, the preview says so and names the one it used instead.
 
 ### Better voices
 
@@ -43,7 +51,7 @@ A new prompt cuts the narration short. It stays on in your next sessions until y
 
 In `/config`:
 
-- **Voice**: a voice's name (`Mónica`, `Microsoft Helena`) to always speak with. Empty: the best one for the language.
+- **Voice**: a voice's name (`Mónica`, `Microsoft Helena`, or `Eddy (es-MX)` for one language's) to always speak with. Empty: the best one for the language. `/narrator voices` lists them and `/narrator test` tries one.
 - **Speed**: how fast it speaks, as a multiple of the voice's normal pace, from `0.5` to `2`: `1.2` by default, a little quicker; `1` is the voice's own. The engine's voice, the last resort, keeps its own pace.
 - **Read short answers as they are**: an answer up to this many characters (200 by default) is read out as it is, with no Haiku call to retell it. `0`: Haiku narrates every answer.
 - **Model that writes the narration**: `haiku` by default.
@@ -54,7 +62,7 @@ Every window shares one line, a folder in your temp directory: when two sessions
 
 ## How it works
 
-One hooks module ([`hooks/register.tsx`](hooks/register.tsx)): a `ui.render` hook on the footer's `SessionMode` draws the switch as a Button, `turn.start` and `tool.call` note the request and each tool call of the main loop, and `turn.complete` asks the model for the narration and hands it to a speaker ([`hooks/speaker.ts`](hooks/speaker.ts)): JavaScript for Automation on macOS, PowerShell on Windows, a shell wrapper on Linux. Each writes a `.` while it speaks, so the mod can end it the moment you send a new prompt. Where none works, the engine's own `$.audio.speak`.
+One hooks module ([`hooks/register.tsx`](hooks/register.tsx)): a `ui.render` hook on the footer's `SessionMode` draws the switch as a Button, as wide as the terminal's width leaves room for beside the mode label and the hint (which a hook on `PromptHint` measures), `turn.start` and `tool.call` note the request and each tool call of the main loop, and `turn.complete` asks the model for the narration and hands it to a speaker ([`hooks/speaker.ts`](hooks/speaker.ts)): JavaScript for Automation on macOS, PowerShell on Windows, a shell wrapper on Linux. Each writes a `.` while it speaks, so the mod can end it the moment you send a new prompt. Where none works, the engine's own `$.audio.speak`.
 
 ## Development
 

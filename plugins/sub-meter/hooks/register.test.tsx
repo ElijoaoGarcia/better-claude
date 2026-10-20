@@ -33,8 +33,8 @@ function world (on: On, rateLimits: SessionRateLimit[] = LIMITS) {
 }
 
 const startSession = ($: Engine) => $.session.start({ cwd: '/project', surface: 'terminal', isInteractive: true })
-const footer = ($: Engine, modes: string[] = []) =>
-  $.ui.mount({ plugin: 'sub-meter', surface: 'terminal', component: 'SessionMode', props: { modes } })
+const footer = ($: Engine, modes: string[] = [], columns?: number) =>
+  $.ui.mount({ plugin: 'sub-meter', surface: 'terminal', component: 'SessionMode', props: { modes }, viewport: columns === undefined ? undefined : { columns, rows: 30 } })
 const hint = ($: Engine, text: string) =>
   $.ui.mount({ plugin: 'sub-meter', surface: 'terminal', component: 'PromptHint', props: { isDraft: false, isWorking: false, hint: text } })
 
@@ -42,8 +42,8 @@ test('shows the 5-hour window first, as a bar with the time until it resets', as
   world(on)
   await startSession($)
   const ui = await footer($)
-  expect(await ui.find({ type: 'Text', text: '5h ' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: '━━━━━━' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: '5h' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: ' ━━━━━━' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: '────' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: ' 58%' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: ' ↻ 2h 10m' })).toBeDefined()
@@ -54,7 +54,7 @@ test('takes turns with the weekly window', async ($, on) => {
   await startSession($)
   await w.clock.advance(8000)
   const ui = await footer($)
-  expect(await ui.find({ type: 'Text', text: 'week ' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: 'week' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: ' 24%' })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: ' ↻ 3d 4h' })).toBeDefined()
 })
@@ -63,9 +63,9 @@ test('takes turns as often as rotateSeconds says', { options: { rotateSeconds: 3
   const w = world(on)
   await startSession($)
   await w.clock.advance(8000)
-  expect(await (await footer($)).find({ type: 'Text', text: '5h ' })).toBeDefined()
+  expect(await (await footer($)).find({ type: 'Text', text: '5h' })).toBeDefined()
   await w.clock.advance(22_000)
-  expect(await (await footer($)).find({ type: 'Text', text: 'week ' })).toBeDefined()
+  expect(await (await footer($)).find({ type: 'Text', text: 'week' })).toBeDefined()
 })
 
 test('alone, with no mode labels, the meter ends the footer', async ($, on) => {
@@ -81,7 +81,7 @@ test("keeps the engine's mode labels after the meter", async ($, on) => {
   const ui = await footer($, ['focus'])
   const row = await ui.drawn()
   expect(row.children?.at(-1)).toMatchObject({ props: { key: 'engine' } })
-  expect((await ui.findAll({ type: 'Text' })).map(text => text.text)).toEqual(['5h ', '━━━━━━', '────', ' 58%', ' ↻ 2h 10m', ' · '])
+  expect((await ui.findAll({ type: 'Text' })).map(text => text.text)).toEqual(['5h', ' ━━━━━━', '────', ' 58%', ' ↻ 2h 10m', ' · '])
 })
 
 test("keeps another plugin's drawing there after the meter, so it stays last", async ($, on) => {
@@ -101,7 +101,7 @@ test('off a subscription the engine draws its own footer', async ($, on) => {
   await startSession($)
   const ui = await footer($, ['focus'])
   expect(await ui.find({ key: 'engine' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: '5h ' })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: '5h' })).toBeUndefined()
 })
 
 test('a new measurement shows at once and is kept for the next session', async ($, on) => {
@@ -109,7 +109,7 @@ test('a new measurement shows at once and is kept for the next session', async (
   await startSession($)
   await $.session.measure({ context: { window: 200_000 }, rateLimits: [{ ...LIMITS[0], percentUsed: 91 }], changed: ['rateLimits'] } as never)
   const ui = await footer($)
-  const used = await ui.find({ type: 'Text', text: '━━━━━━━━━' })
+  const used = await ui.find({ type: 'Text', text: ' ━━━━━━━━━' })
   expect(used?.props.color).toBe('error')
   expect(w.store.limits).toEqual([{ ...LIMITS[0], percentUsed: 91 }])
 })
@@ -128,14 +128,91 @@ test('drops the cycle hint from the line after the mode', async ($, on) => {
   expect(await ui.find({ type: 'Text', text: '← for agents' })).toBeDefined()
 })
 
-test('keeps what is around the cycle hint, without empty parts', async ($, on) => {
+test('keeps what is around the cycle hint, without empty parts', { options: { hideInterruptHint: false } }, async ($, on) => {
   world(on)
   const ui = await hint($, 'esc to interrupt (shift+tab to cycle) ·  · ctrl+t to hide tasks')
   expect(await ui.find({ type: 'Text', text: 'esc to interrupt · ctrl+t to hide tasks' })).toBeDefined()
+})
+
+test('drops "esc to interrupt" while Claude works', async ($, on) => {
+  world(on)
+  const ui = await hint($, 'esc to interrupt (shift+tab to cycle) ·  · ctrl+t to hide tasks')
+  expect(await ui.find({ type: 'Text', text: 'ctrl+t to hide tasks' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /esc to interrupt/ })).toBeUndefined()
+})
+
+test('keeps the hints when told to', { options: { hideCycleHint: false, hideInterruptHint: false } }, async ($, on) => {
+  world(on)
+  const ui = await hint($, 'esc to interrupt (shift+tab to cycle)')
+  expect(await ui.find({ type: 'Text', text: 'esc to interrupt (shift+tab to cycle)' })).toBeDefined()
 })
 
 test('leaves every other hint as it is', async ($, on) => {
   world(on)
   const ui = await hint($, '? for shortcuts')
   expect(await ui.find({ type: 'Text', text: '? for shortcuts' })).toBeDefined()
+})
+
+// The footer's row at 56 columns leaves the meter its 26: 4 of padding, 2 between, 20 for the mode
+// label, and 4 for a plugin that may wrap it.
+const texts = async (ui: { findAll: (query: { type: 'Text' }) => Promise<{ text?: string }[]> }) => (await ui.findAll({ type: 'Text' })).map(text => text.text)
+
+test('where the row is short the meter gives up its bar, then the reset time, then itself', async ($, on) => {
+  world(on)
+  await startSession($)
+  expect(await texts(await footer($, [], 56))).toEqual(['5h', ' ━━━━━━', '────', ' 58%', ' ↻ 2h 10m'])
+  expect(await texts(await footer($, [], 55))).toEqual(['5h', ' 58%', ' ↻ 2h 10m'])
+  expect(await texts(await footer($, [], 44))).toEqual(['5h', ' 58%'])
+  const none = await footer($, [], 35)
+  expect(await none.find({ type: 'Text', text: '5h' })).toBeUndefined()
+})
+
+test('the hint beside the mode label takes its room from the meter', async ($, on) => {
+  world(on)
+  await startSession($)
+  await hint($, '? for shortcuts')
+  expect(await texts(await footer($, [], 72))).toEqual(['5h', ' ━━━━━━', '────', ' 58%', ' ↻ 2h 10m'])
+  expect(await texts(await footer($, [], 71))).toEqual(['5h', ' 58%', ' ↻ 2h 10m'])
+})
+
+test("another plugin's switch beneath keeps its room: the meter shrinks first", { plugins: [{
+  name: 'switch',
+  register (on) {
+    on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
+      await next(e)
+      const { Text } = $.ui.resolve(e)
+      return <Text>{'⏵ narrator on'}</Text>
+    })
+  }
+}] }, async ($, on) => {
+  world(on)
+  await startSession($)
+  expect(await texts(await footer($, [], 68))).toEqual(['5h', ' ━━━━━━', '────', ' 58%', ' ↻ 2h 10m', ' · ', '⏵ narrator on'])
+  expect(await texts(await footer($, [], 67))).toEqual(['5h', ' 58%', ' ↻ 2h 10m', ' · ', '⏵ narrator on'])
+  expect(await texts(await footer($, [], 47))).toEqual(['⏵ narrator on'])
+})
+
+test('what a switch beneath gives up is not taken back: the meter only shrinks as the row does', { plugins: [{
+  name: 'switch',
+  register (on) {
+    on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
+      await next(e)
+      const { Text } = $.ui.resolve(e)
+      return <Text>{'⏵'}</Text>
+    })
+  }
+}] }, async ($, on) => {
+  world(on)
+  await startSession($)
+  expect(await texts(await footer($, [], 54))).toEqual(['5h', ' 58%', ' ↻ 2h 10m', ' · ', '⏵'])
+  expect(await texts(await footer($, [], 53))).toEqual(['5h', ' 58%', ' · ', '⏵'])
+  expect(await texts(await footer($, [], 36))).toEqual(['5h', ' 58%', ' · ', '⏵'])
+  expect(await texts(await footer($, [], 35))).toEqual(['⏵'])
+})
+
+test('off the terminal the meter is drawn whole', async ($, on) => {
+  world(on)
+  await startSession($)
+  const ui = await $.ui.mount({ plugin: 'sub-meter', surface: 'desktop', component: 'SessionMode', props: { modes: [] }, viewport: { columns: 30, rows: 30 } })
+  expect(await ui.find({ type: 'Text', text: ' ━━━━━━' })).toBeDefined()
 })
